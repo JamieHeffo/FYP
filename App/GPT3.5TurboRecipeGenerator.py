@@ -23,6 +23,7 @@ def generate_response(prompt):
         frequency_penalty=0.0,
         presence_penalty=0.6,
     )
+
     # Get the response text from the API response
     response_text = response['choices'][0]['message']['content']
 
@@ -33,12 +34,16 @@ def generate_response(prompt):
 print("*****CookSmart Recipe Generator*****")
 
 # Loop to continue the conversation until the user exits
+<<<<<<< Updated upstream:App/GPT3.5TurboRecipeGenerator.py
 # recipeStyle = input("Please choose a style of cuisine: ")
 recipeStyle = 'French'
 ingredients_list = ["Chicken", "2 carrots", "broccoli", "onion"]
 
 # Combine the ingredients into a formatted string
 formatted_ingredients = ', '.join(ingredients_list)
+=======
+
+>>>>>>> Stashed changes:App/RecipeGenerator.py
 
 # while True: Loop if we want a response from the user
 # Prompt the user for input
