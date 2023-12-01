@@ -1,6 +1,7 @@
 from roboflow import Roboflow
+from config import ROBOFLOW_KEY
 
-rf = Roboflow(api_key="pVgrgJI8kfW40jASdT4Y")
+rf = Roboflow(api_key=ROBOFLOW_KEY)
 project = rf.workspace().project("vegetables-xfglo")
 model = project.version(1).model
 

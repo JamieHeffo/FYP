@@ -25,9 +25,9 @@ def generate_recipe(style, ingredients):
 
 # Example usage
 recipeStyle = input("Please choose a style of cuisine: ")
-ingredients_list = ["Chicken, 2 carrots", "broccoli", "onion"]
+ingredients_list = ["2 carrots", "broccoli", "onion"]
 generated_recipe = generate_recipe(recipeStyle, ingredients_list)
 
-print(f"+-----------------------------------------------------+")
+print("Generated Recipe:")
 print(generated_recipe)
-print(f"+-----------------------------------------------------+")
+print(recipeStyle)
