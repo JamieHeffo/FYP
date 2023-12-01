@@ -1,7 +1,7 @@
 import openai
 
 # Set your OpenAI API key
-openai.api_key = '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'
+openai.api_key = 'API KEY'
 
 
 def generate_recipe(style, ingredients):
