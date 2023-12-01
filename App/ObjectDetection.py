@@ -46,7 +46,6 @@ def getUniqueIngredients(predictions):
     unique_ingredients_list = [f"{count} {ingredient} " if count >
                                1 else ingredient for ingredient, count in unique_ingredients.items()]
 
-    print(unique_ingredients_list)
     return unique_ingredients_list
 
 
@@ -85,5 +84,5 @@ imageInfo, predictions = ObjectDetection(model, filePath)
 # Get unique ingredients from imagae
 uniqueIngredients = getUniqueIngredients(predictions)
 
-# Print informative message to the user
+# Print output to the user
 # printImageInfo(imageInfo, predictions)
