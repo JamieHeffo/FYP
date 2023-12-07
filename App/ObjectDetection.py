@@ -9,7 +9,7 @@ model = project.version(1).model
 filePath = "TrainingDataV1/Test.jpg"
 
 # save prediction to  file
-model.predict(filePath, confidence=40, overlap=30).save("result.jpg")
+model.predict(filePath, confidence=40, overlap=30).save("DetectionResult.jpg")
 
 # Extracting unique ingredients and clean output
 

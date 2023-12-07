@@ -21,6 +21,7 @@ def generateResponse(prompt):
         frequency_penalty=0.0,
         presence_penalty=0.6,
     )
+
     # Get the response text from the API response
     response_text = response['choices'][0]['message']['content']
 
