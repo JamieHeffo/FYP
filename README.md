@@ -2,7 +2,7 @@
 
 ## Overview
 
-SmartRecipeGenerator is a project that combines object detection and natural language processing to automatically generate recipes based on detected ingredients. It utilizes the Roboflow API for object detection and OpenAI's GPT-3.5-turbo for recipe generation.
+CookSmart is a project that combines object detection and natural language processing to automatically generate recipes based on detected ingredients. It utilizes the Roboflow API for object detection and OpenAI's GPT-3.5-turbo for recipe generation.
 
 ## Features
 
@@ -11,7 +11,7 @@ SmartRecipeGenerator is a project that combines object detection and natural lan
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com/your-username/SmartRecipeGenerator.git`
+1. Clone the repository: `git clone https://github.com/JamieHeffo/FYP.git`
 2. Install dependencies: `pip install -r requirements.txt`
 3. Set up API keys: Obtain API keys for Roboflow and OpenAI. Update the `config.py` file with your keys.
 4. Run the main script: `python main.py`
