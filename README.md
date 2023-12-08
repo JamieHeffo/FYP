@@ -1,4 +1,4 @@
-# SmartRecipeGenerator
+# CookSmart : Exploring Object Detection and Recipe Generation using Machine Learning
 
 ## Overview
 
