@@ -5,16 +5,14 @@ from config import GPT_KEY
 # Authenticate with OpenAI
 openai.api_key = GPT_KEY
 
-# Define a function to prompt the user for input and generate a response
-
 
 def generateResponse(prompt):
     # Call the OpenAI API to generate a response
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "I am a world class chef who has made it their life goal to create easy to cook recipes for anyone regardless of culinary experience"}, {
+        messages=[{"role": "system", "content": "I am a world class chef who has made it their life goal to create easy to cook recipes for anyone regardless of culinary experience, I respond only in JSON objects"}, {
             'role': 'user', 'content': prompt}],
-        max_tokens=500,
+        max_tokens=2000,
         n=1,
         temperature=0.5,
         top_p=1,
@@ -24,7 +22,6 @@ def generateResponse(prompt):
 
     # Get the response text from the API response
     response_text = response['choices'][0]['message']['content']
-
     return response_text
 
 
