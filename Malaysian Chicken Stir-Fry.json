@@ -1,0 +1,101 @@
+{
+  "Users": [
+    {
+      "UserID": 1,
+      "Username": "Jamie"
+    }
+  ],
+  "Ingredients": [
+    {
+      "IngredientID": 1,
+      "Name": "Broccoli"
+    },
+    {
+      "IngredientID": 2,
+      "Name": "Carrot"
+    },
+    {
+      "IngredientID": 3,
+      "Name": "Onion"
+    },
+    {
+      "IngredientID": 4,
+      "Name": "Chicken"
+    }
+  ],
+  "Recipes": [
+    {
+      "RecipeID": 1,
+      "UserID": 1,
+      "Title": "Malaysian Chicken Stir-Fry",
+      "Calories": 350
+    }
+  ],
+  "RecipeIngredients": [
+    {
+      "RecipeID": 1,
+      "IngredientID": 1,
+      "Amount": 1
+    },
+    {
+      "RecipeID": 1,
+      "IngredientID": 2,
+      "Amount": 2
+    },
+    {
+      "RecipeID": 1,
+      "IngredientID": 3,
+      "Amount": 1
+    },
+    {
+      "RecipeID": 1,
+      "IngredientID": 4,
+      "Amount": 2
+    }
+  ],
+  "Instructions": [
+    {
+      "InstructionID": 1,
+      "RecipeID": 1,
+      "StepNumber": 1,
+      "Description": "Step 1: Heat oil in a pan over medium heat."
+    },
+    {
+      "InstructionID": 2,
+      "RecipeID": 1,
+      "StepNumber": 2,
+      "Description": "Step 2: Add chicken and cook until browned."
+    },
+    {
+      "InstructionID": 3,
+      "RecipeID": 1,
+      "StepNumber": 3,
+      "Description": "Step 3: Add onion, carrot, and broccoli. Stir-fry for 3-4 minutes."
+    },
+    {
+      "InstructionID": 4,
+      "RecipeID": 1,
+      "StepNumber": 4,
+      "Description": "Step 4: In a separate bowl, mix together the sauce ingredients."
+    },
+    {
+      "InstructionID": 5,
+      "RecipeID": 1,
+      "StepNumber": 5,
+      "Description": "Step 5: Pour the sauce over the chicken and vegetables. Cook for an additional 2-3 minutes."
+    },
+    {
+      "InstructionID": 6,
+      "RecipeID": 1,
+      "StepNumber": 6,
+      "Description": "Step 6: Serve hot with steamed rice or noodles."
+    }
+  ],
+  "Notes": [
+    {
+      "NoteID": 1,
+      "RecipeID": 1,
+      "AdditionalNotes": "Feel free to adjust the amount of sauce according to your taste preferences."
+    }
+  ]
+}
