@@ -17,17 +17,27 @@ import ModalComponent from './src/components/ModalComponent';
 function App(): React.JSX.Element {
 
   const [items, setItems] = useState([]);
+  const [recipeName, setRecipeName] = useState([]);
+
   const [showModal, setShowModal] = useState(false);
 
-  // Function to fetch items from Supabase
-  const getItems = async () => {
-    // Using Supabase client to fetch data from 'Items' table
-    let { data: Items, error } = await supabase
-      .from('Items')
+  //Function to return recipe titles
+  const getRecipeName = async () => {
+    let { data: recipes, error } = await supabase
+      .from('recipes')
       .select('*');
 
-    return Items;
+    return recipes;
   }
+
+  // useEffect hook to fetch recipe titles when the component mounts
+  useEffect(() => {
+    getRecipeName()
+      .then((recipeName) => {
+        //set recipe titles after collection
+        setRecipeName(recipeName);
+      })
+  }, []);
 
   // Function to insert an item into Supabase
   const addNewItem = async (item) => {
@@ -53,14 +63,7 @@ function App(): React.JSX.Element {
       })
   }
 
-  // useEffect hook to fetch items when the component mounts
-  useEffect(() => {
-    getItems()
-      .then((items) => {
-        //set items after collection
-        setItems(items);
-      })
-  }, []);
+
 
   // Render method
   return (
@@ -68,13 +71,13 @@ function App(): React.JSX.Element {
       <View style={styles.scrollView}>
         <Text style={styles.heading}>My Shopping List</Text>
         <FlatList
-          data={items}
+          data={recipeName}
           renderItem={({ item, index }) => (
             <>
               <ToDoItem item={item} />
             </>
           )}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.recipeid}
         />
         {/* Add New Item View */}
         <TouchableOpacity style={styles.AddButton} onPress={() => setShowModal(true)}>
