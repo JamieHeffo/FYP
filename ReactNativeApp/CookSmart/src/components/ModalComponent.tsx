@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, Modal, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
+
 const ModalComponent = (props) => {
 
     const [text, setText] = useState('')
 
     const addNewItem = () => {
-
         if (text.length === 0)
             return;
 
@@ -13,6 +13,7 @@ const ModalComponent = (props) => {
         setText("");
         props.hideModal();
     }
+
     return (
         <Modal animationType='slide' visible={true} transparent={true}>
             <TouchableOpacity onPress={props.hideModal} style={styles.modalBackDrop} activeOpacity={1}>

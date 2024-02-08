@@ -12,6 +12,7 @@ import AddIcon from './src/assets/AddIconImage.png';
 // Components
 import ToDoItem from './src/components/ToDoItem';
 import ModalComponent from './src/components/ModalComponent';
+import AddRecipeModal from './src/components/AddRecipeModal'
 
 // Main component
 function App(): React.JSX.Element {
@@ -85,7 +86,7 @@ function App(): React.JSX.Element {
         </TouchableOpacity>
       </View>
 
-      {showModal ? <ModalComponent saveNewItem={saveItem} hideModal={() => setShowModal(false)} /> : null}
+      {showModal ? <AddRecipeModal saveNewItem={saveItem} hideModal={() => setShowModal(false)} /> : null}
     </SafeAreaView >
   );
 }
