@@ -1,28 +1,15 @@
-/*
-// To Run : npx expo start
-*/
-//imports
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, FlatList } from 'react-native';
 import { supabase } from './supabase/supabase';
-
-// Icons
 import AddIcon from './src/assets/AddIconImage.png';
-
-// Components
 import ToDoItem from './src/components/ToDoItem';
-import ModalComponent from './src/components/ModalComponent';
-import AddRecipeModal from './src/components/AddRecipeModal'
+import AddRecipeModal from './src/components/AddRecipeModal';
 
-// Main component
 function App(): React.JSX.Element {
-
-  const [items, setItems] = useState([]);
   const [recipeName, setRecipeName] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
 
-  //Function to return recipe titles
+  // Function to get all the recipe names from the database
   const getRecipeName = async () => {
     let { data: recipes, error } = await supabase
       .from('recipes')
@@ -31,26 +18,36 @@ function App(): React.JSX.Element {
     return recipes;
   }
 
-  // useEffect hook to fetch recipe titles when the component mounts
+  //Hook to fetch recipe titles when the component mounts
   useEffect(() => {
     getRecipeName()
-      .then((recipeName) => {
-        //set recipe titles after collection
-        setRecipeName(recipeName);
+      .then((recipes) => {
+        setRecipeName(recipes);
       })
   }, []);
 
-  // Function to insert an item into Supabase
-  const addNewItem = async (item) => {
+  //after this
 
+  const addNewItem = async (item) => {
     const { data: Items, error } = await supabase
       .from('Items')
       .insert([
         { description: item, completed: false },
-        //{ completed: false }, adds a whole new empty for with just completed
-      ])
+      ]);
 
-    return Items
+    return Items;
+  }
+
+  const addNewRecipe = async (recipeTitle: string) => {
+    const { data: Recipes, error } = await supabase
+      .from('recipes')
+      .insert([{ title: recipeTitle, calories: 200 }]);
+
+    if (error) {
+      console.log('Error inserting recipe title:', error);
+      return Recipes;
+    }
+    return Recipes;
   }
 
   const saveItem = (item) => {
@@ -58,15 +55,22 @@ function App(): React.JSX.Element {
       .then(() => {
         getItems()
           .then((items) => {
-            //set items after collection
             setItems(items);
           })
       })
   }
 
+  const saveRecipe = (recipeTitle) => {
+    addNewRecipe(recipeTitle)
+      .then(() => {
+        getRecipeName()
+          .then((recipes) => {
+            setRecipeName(recipes);
+          })
+      })
+  }
 
 
-  // Render method
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.scrollView}>
@@ -74,20 +78,17 @@ function App(): React.JSX.Element {
         <FlatList
           data={recipeName}
           renderItem={({ item, index }) => (
-            <>
-              <ToDoItem item={item} />
-            </>
+            <ToDoItem item={item} />
           )}
-          keyExtractor={item => item.recipeid}
+          keyExtractor={item => item.recipeid.toString()}
         />
-        {/* Add New Item View */}
         <TouchableOpacity style={styles.AddButton} onPress={() => setShowModal(true)}>
           <Image source={AddIcon} style={styles.AddIconImage} />
         </TouchableOpacity>
       </View>
 
-      {showModal ? <AddRecipeModal saveNewItem={saveItem} hideModal={() => setShowModal(false)} /> : null}
-    </SafeAreaView >
+      {showModal ? <AddRecipeModal saveNewRecipe={saveRecipe} hideModal={() => setShowModal(false)} /> : null}
+    </SafeAreaView>
   );
 }
 
@@ -99,8 +100,6 @@ const styles = StyleSheet.create({
 
   scrollView: {
     flex: 1,
-    //justifyContent: 'center',
-    //alignItems: 'center',
     backgroundColor: '#847DA4',
     padding: '5%',
   },
@@ -118,12 +117,10 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#FFFFFF',
     borderRadius: 100,
-    display: 'flex',
+    position: 'absolute',
     bottom: 0,
     right: 0,
-    position: 'absolute',
     margin: '5%',
-    //Dropshadow stuff here
     shadowOffset: {
       width: 0,
       height: 2,
@@ -131,7 +128,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.85,
     elevation: 5,
-    //End Dropshadow stuff
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -142,5 +138,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// Exporting the component as the default export
 export default App;

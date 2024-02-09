@@ -7,47 +7,28 @@ const ModalComponent = (props) => {
     const [ingredients, setIngredients] = useState([{ name: '', quantity: '', unit: '' }]);
     const [instructions, setInstructions] = useState(['']);
 
-    // Function to add a new ingredient to the list
+    // Function to add a new ingredient to the form
     const addIngredient = () => {
         setIngredients([...ingredients, { name: '', quantity: '', unit: '' }]);
     };
 
-    // Function to remove an ingredient from the list
+    // Function to add a new instruction to the form
+    const addInstruction = () => {
+        setInstructions([...instructions, '']);
+    };
+
+    // Function to remove an ingredient from the form
     const removeIngredient = (index: number) => {
         const updatedIngredients = [...ingredients];
         updatedIngredients.splice(index, 1);
         setIngredients(updatedIngredients);
     };
 
-    // Function to add a new instruction to the list
-    const addInstruction = () => {
-        setInstructions([...instructions, '']);
-    };
-
-    // Function to remove an instruction from the list
+    // Function to remove an instruction from the form
     const removeInstruction = (index: number) => {
         const updatedInstructions = [...instructions];
         updatedInstructions.splice(index, 1);
         setInstructions(updatedInstructions);
-    };
-
-    // Function to add a new recipe
-    const addNewItem = () => {
-        if (recipeTitle.length === 0 || ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) || instructions.some(instruction => instruction.length === 0))
-            return;
-
-        const newRecipe = {
-            title: recipeTitle,
-            ingredients: ingredients.filter(ingredient => ingredient.name.length > 0 && ingredient.quantity.length > 0),
-            instructions: instructions.filter(instruction => instruction.length > 0),
-        };
-
-        props.saveNewItem(newRecipe);
-        // Clear all the state variables
-        setRecipeTitle('');
-        setIngredients([{ name: '', quantity: '', unit: '' }]);
-        setInstructions(['']);
-        props.hideModal();
     };
 
     // Function to handle changes in ingredient details
@@ -64,11 +45,34 @@ const ModalComponent = (props) => {
         setInstructions(updatedInstructions);
     };
 
+    // Function to add a new recipe
+    const addNewRecipe = async () => {
+
+        // Check if the recipe title, ingredients, and instructions are not empty
+        if (recipeTitle.length === 0)
+            //|| ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) || instructions.some(instruction => instruction.length === 0))
+            return;
+
+        //if (Error) {
+        //    console.log('Error inserting recipe title:', Error);
+        //    console.log(recipeTitle);
+        //    return;
+        //}
+
+        props.saveNewRecipe(recipeTitle);
+        // Clear all the state variables
+        setRecipeTitle('');
+        setIngredients([{ name: '', quantity: '', unit: '' }]);
+        setInstructions(['']);
+        props.hideModal();
+    };
+
     return (
         <Modal animationType='slide' visible={true} transparent={true}>
             <TouchableOpacity onPress={props.hideModal} style={styles.modalBackDrop} activeOpacity={1}>
                 <View style={styles.newItemForm}>
                     <Text style={styles.heading}>Add Custom Recipe</Text>
+                    {/* Recipe Title */}
                     <TextInput value={recipeTitle} onChangeText={setRecipeTitle} placeholder='Recipe Title' style={styles.input}></TextInput>
 
                     <ScrollView>
@@ -126,7 +130,7 @@ const ModalComponent = (props) => {
                     </ScrollView>
 
                     {/* Button to add the new recipe */}
-                    <TouchableOpacity style={styles.button} onPress={addNewItem}>
+                    <TouchableOpacity style={styles.button} onPress={() => addNewRecipe()}>
                         <Text style={styles.buttonText}>Add Recipe</Text>
                     </TouchableOpacity>
                 </View>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Modal, StyleSheet, Text, TouchableOpacity, TextInput } from 'react-native';
 
 const ModalComponent = (props) => {
-
+    // State variables
     const [text, setText] = useState('')
 
     const addNewItem = () => {
@@ -32,6 +32,7 @@ const ModalComponent = (props) => {
 export default ModalComponent;
 
 const styles = StyleSheet.create({
+
     modalBackDrop: {
         flex: 1,
         backgroundColor: '#847DA4',//'rgba(0,0,0,0.60',
