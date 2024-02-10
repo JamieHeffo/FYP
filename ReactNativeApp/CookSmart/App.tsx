@@ -26,42 +26,50 @@ function App(): React.JSX.Element {
       })
   }, []);
 
-  //after this
+  // * INSERTING DATA
 
-  const addNewItem = async (item) => {
-    const { data: Items, error } = await supabase
-      .from('Items')
-      .insert([
-        { description: item, completed: false },
-      ]);
+  // Function to add a new recipe to the database
+  const addNewRecipe = async (recipeTitle: string, instructions: string[]) => {
 
-    return Items;
-  }
-
-  const addNewRecipe = async (recipeTitle: string) => {
-    const { data: Recipes, error } = await supabase
+    // Recipe title
+    const { data: Recipes, error: recipeError } = await supabase
       .from('recipes')
-      .insert([{ title: recipeTitle, calories: 200 }]);
+      .insert([{ title: recipeTitle, calories: 200 }])
+      .select('*');
 
-    if (error) {
-      console.log('Error inserting recipe title:', error);
-      return Recipes;
-    }
+    // Get the recipe ID from previous select statement
+    const recipeId = Recipes[0].recipeid;
+
+    //Check if something went wrong
+    console.log('Recipe Title:', recipeTitle);
+    console.log('Instructions', [...instructions]);
+    console.log('Recipe ID: ', recipeId);
+
+
+    // Instruction Data 
+    const instructionsData = instructions.map((instruction, index) => ({
+      recipeid: recipeId,
+      stepnumber: index + 1,  // Assuming step numbers start from 1
+      description: instruction,
+    }))
+
+    // Instructions
+    const { data: Instructions, error: instructionError } = await supabase
+      .from('instructions')
+      .insert(instructionsData)
+      //.insert(instructions.map((instruction) => ({ recipeid: recipeId, description: instruction })))
+      //.insert([{ instructionid: 420, recipeid: 5, stepnumber: 1, description: 'Preheat the oven to 350 degrees' }])
+      .select('*');
+
+    console.log('Instruction Error:', instructionError);
+
     return Recipes;
   }
 
-  const saveItem = (item) => {
-    addNewItem(item)
-      .then(() => {
-        getItems()
-          .then((items) => {
-            setItems(items);
-          })
-      })
-  }
 
-  const saveRecipe = (recipeTitle) => {
-    addNewRecipe(recipeTitle)
+  // Function to save a new recipe
+  const saveRecipe = (recipeTitle: string, instructions: string[]) => {
+    addNewRecipe(recipeTitle, instructions)
       .then(() => {
         getRecipeName()
           .then((recipes) => {

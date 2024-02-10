@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Modal, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 
-const ModalComponent = (props) => {
+const ModalComponent = ({ saveNewRecipe, hideModal }) => {
     // State variables
     const [recipeTitle, setRecipeTitle] = useState('');
     const [ingredients, setIngredients] = useState([{ name: '', quantity: '', unit: '' }]);
@@ -12,11 +12,6 @@ const ModalComponent = (props) => {
         setIngredients([...ingredients, { name: '', quantity: '', unit: '' }]);
     };
 
-    // Function to add a new instruction to the form
-    const addInstruction = () => {
-        setInstructions([...instructions, '']);
-    };
-
     // Function to remove an ingredient from the form
     const removeIngredient = (index: number) => {
         const updatedIngredients = [...ingredients];
@@ -24,18 +19,29 @@ const ModalComponent = (props) => {
         setIngredients(updatedIngredients);
     };
 
+    // Function to handle changes in ingredient details
+    type Ingredient = {
+        name: string;
+        quantity: string;
+        unit: string;
+    };
+
+    const handleIngredientChange = (index: number, key: keyof Ingredient, value: string) => {
+        const updatedIngredients = [...ingredients];
+        updatedIngredients[index][key] = value;
+        setIngredients(updatedIngredients);
+    };
+
+    // Function to add a new instruction to the form
+    const addInstruction = () => {
+        setInstructions([...instructions, '']);
+    };
+
     // Function to remove an instruction from the form
     const removeInstruction = (index: number) => {
         const updatedInstructions = [...instructions];
         updatedInstructions.splice(index, 1);
         setInstructions(updatedInstructions);
-    };
-
-    // Function to handle changes in ingredient details
-    const handleIngredientChange = (index: number, key: string, value: string) => {
-        const updatedIngredients = [...ingredients];
-        updatedIngredients[index][key] = value;
-        setIngredients(updatedIngredients);
     };
 
     // Function to handle changes in instruction details
@@ -49,27 +55,29 @@ const ModalComponent = (props) => {
     const addNewRecipe = async () => {
 
         // Check if the recipe title, ingredients, and instructions are not empty
-        if (recipeTitle.length === 0)
-            //|| ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) || instructions.some(instruction => instruction.length === 0))
+        if ((recipeTitle.length === 0) ||
+            instructions.some(instruction => instruction.length === 0))
+            //|| ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) 
             return;
+        /* 
+                if (Error) {
+                    console.log('Error inserting recipe title:', Error);
+                    console.log('Title : ', recipeTitle);
+                    console.log('Instructions : ', instructions);
+                    return;
+                } */
 
-        //if (Error) {
-        //    console.log('Error inserting recipe title:', Error);
-        //    console.log(recipeTitle);
-        //    return;
-        //}
-
-        props.saveNewRecipe(recipeTitle);
+        saveNewRecipe(recipeTitle, instructions);
         // Clear all the state variables
         setRecipeTitle('');
         setIngredients([{ name: '', quantity: '', unit: '' }]);
         setInstructions(['']);
-        props.hideModal();
+        hideModal();
     };
 
     return (
         <Modal animationType='slide' visible={true} transparent={true}>
-            <TouchableOpacity onPress={props.hideModal} style={styles.modalBackDrop} activeOpacity={1}>
+            <TouchableOpacity onPress={hideModal} style={styles.modalBackDrop} activeOpacity={1}>
                 <View style={styles.newItemForm}>
                     <Text style={styles.heading}>Add Custom Recipe</Text>
                     {/* Recipe Title */}
@@ -129,7 +137,7 @@ const ModalComponent = (props) => {
                         </TouchableOpacity>
                     </ScrollView>
 
-                    {/* Button to add the new recipe */}
+                    {/* Submit Button */}
                     <TouchableOpacity style={styles.button} onPress={() => addNewRecipe()}>
                         <Text style={styles.buttonText}>Add Recipe</Text>
                     </TouchableOpacity>
