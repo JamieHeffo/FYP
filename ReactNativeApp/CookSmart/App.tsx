@@ -37,19 +37,13 @@ function App(): React.JSX.Element {
       .insert([{ title: recipeTitle, calories: 200 }])
       .select('*');
 
-    // Get the recipe ID from previous select statement
+    // Get the recipe ID to link other tables
     const recipeId = Recipes[0].recipeid;
-
-    //Check if something went wrong
-    console.log('Recipe Title:', recipeTitle);
-    console.log('Instructions', [...instructions]);
-    console.log('Recipe ID: ', recipeId);
-
 
     // Instruction Data 
     const instructionsData = instructions.map((instruction, index) => ({
       recipeid: recipeId,
-      stepnumber: index + 1,  // Assuming step numbers start from 1
+      stepnumber: index + 1,
       description: instruction,
     }))
 
@@ -57,11 +51,11 @@ function App(): React.JSX.Element {
     const { data: Instructions, error: instructionError } = await supabase
       .from('instructions')
       .insert(instructionsData)
-      //.insert(instructions.map((instruction) => ({ recipeid: recipeId, description: instruction })))
-      //.insert([{ instructionid: 420, recipeid: 5, stepnumber: 1, description: 'Preheat the oven to 350 degrees' }])
       .select('*');
 
-    console.log('Instruction Error:', instructionError);
+    // Log errors
+    if (recipeError) console.log('Recipe Error:', recipeError);
+    if (instructionError) console.log('Instruction Error:', instructionError);
 
     return Recipes;
   }
@@ -82,7 +76,7 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.mainView}>
       <View style={styles.scrollView}>
-        <Text style={styles.heading}>My Shopping List</Text>
+        <Text style={styles.heading}>My Recipes</Text>
         <FlatList
           data={recipeName}
           renderItem={({ item, index }) => (
