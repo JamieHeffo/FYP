@@ -29,16 +29,42 @@ function App(): React.JSX.Element {
   // * INSERTING DATA
 
   // Function to add a new recipe to the database
-  const addNewRecipe = async (recipeTitle: string, instructions: string[]) => {
+  const addNewRecipe = async (recipeTitle: string, ingredients: { name: string, quantity: string }[], instructions: string[]) => {
 
     // Recipe title
     const { data: Recipes, error: recipeError } = await supabase
       .from('recipes')
-      .insert([{ title: recipeTitle, calories: 200 }])
+      .insert([{ title: recipeTitle, calories: 200, userid: 1 }])
       .select('*');
 
     // Get the recipe ID to link other tables
     const recipeId = Recipes[0].recipeid;
+
+    // Ingredient Data
+    const ingredientsData = ingredients.map((ingredient, index) => ({
+      name: ingredient.name,
+    }));
+
+    // Insert into ingreditents tables
+    const { data: Ingredients, error: ingredientError } = await supabase
+      .from('ingredients')
+      .insert(ingredientsData)
+      .select('*')
+
+    //Get the ingredient ID to link other tables
+    let ingredientId = Ingredients[0].ingredientid;
+
+    const recipeIngredientsData = ingredients.map((ingredient, index) => ({
+      recipeid: recipeId,
+      ingredientid: Ingredients[index].ingredientid,
+      amount: ingredient.quantity,
+    }));
+
+    // Insert into recipeIngredients table
+    const { data: RecipeIngredients, error: recipeIngredientError } = await supabase
+      .from('recipeingredients')
+      .insert(recipeIngredientsData)
+      .select('*');
 
     // Instruction Data 
     const instructionsData = instructions.map((instruction, index) => ({
@@ -47,23 +73,30 @@ function App(): React.JSX.Element {
       description: instruction,
     }))
 
-    // Instructions
+    // Insert the instruction data
     const { data: Instructions, error: instructionError } = await supabase
       .from('instructions')
       .insert(instructionsData)
       .select('*');
 
+    //print ingredient data
+    console.log('Ingredient Data\n', ingredientsData);
+    console.log('\nRecipe Ingredient Data\n', recipeIngredientsData);
+
     // Log errors
     if (recipeError) console.log('Recipe Error:', recipeError);
+    if (ingredientError) console.log('Ingredient Error:', ingredientError);
+    if (recipeIngredientError) console.log('Recipe Ingredient Error:', recipeIngredientError);
     if (instructionError) console.log('Instruction Error:', instructionError);
+
 
     return Recipes;
   }
 
 
   // Function to save a new recipe
-  const saveRecipe = (recipeTitle: string, instructions: string[]) => {
-    addNewRecipe(recipeTitle, instructions)
+  const saveRecipe = (recipeTitle: string, ingredients: string[], instructions: string[]) => {
+    addNewRecipe(recipeTitle, ingredients, instructions)
       .then(() => {
         getRecipeName()
           .then((recipes) => {

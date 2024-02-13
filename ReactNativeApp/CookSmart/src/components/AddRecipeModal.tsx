@@ -4,12 +4,13 @@ import { View, Modal, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView 
 const ModalComponent = ({ saveNewRecipe, hideModal }) => {
     // State variables
     const [recipeTitle, setRecipeTitle] = useState('');
-    const [ingredients, setIngredients] = useState([{ name: '', quantity: '', unit: '' }]);
+    const [ingredients, setIngredients] = useState([{ name: '', quantity: '' }]);
     const [instructions, setInstructions] = useState(['']);
+    const [note, setNote] = useState(['']);
 
     // Function to add a new ingredient to the form
     const addIngredient = () => {
-        setIngredients([...ingredients, { name: '', quantity: '', unit: '' }]);
+        setIngredients([...ingredients, { name: '', quantity: '' }]);
     };
 
     // Function to remove an ingredient from the form
@@ -23,7 +24,6 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
     type Ingredient = {
         name: string;
         quantity: string;
-        unit: string;
     };
 
     const handleIngredientChange = (index: number, key: keyof Ingredient, value: string) => {
@@ -59,18 +59,11 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
             instructions.some(instruction => instruction.length === 0))
             //|| ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) 
             return;
-        /* 
-                if (Error) {
-                    console.log('Error inserting recipe title:', Error);
-                    console.log('Title : ', recipeTitle);
-                    console.log('Instructions : ', instructions);
-                    return;
-                } */
 
-        saveNewRecipe(recipeTitle, instructions);
+        saveNewRecipe(recipeTitle, ingredients, instructions);
         // Clear all the state variables
         setRecipeTitle('');
-        setIngredients([{ name: '', quantity: '', unit: '' }]);
+        setIngredients([{ name: '', quantity: '' }]);
         setInstructions(['']);
         hideModal();
     };
@@ -96,6 +89,7 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
                                     />
                                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '30%' }}>
                                         <TextInput
+                                            keyboardType="numeric"
                                             value={ingredient.quantity}
                                             onChangeText={(value) => handleIngredientChange(index, 'quantity', value)}
                                             placeholder='g'
@@ -105,6 +99,9 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
                                         <TouchableOpacity onPress={() => removeIngredient(index)}>
                                             <Text style={styles.removeButton}>X</Text>
                                         </TouchableOpacity>
+
+                                        {/* Recipe Notes */}
+                                        {/*<TextInput value={note} onChangeText={setNote} placeholder='Notes' style={styles.input}></TextInput>*/}
 
                                     </View>
                                 </View>
