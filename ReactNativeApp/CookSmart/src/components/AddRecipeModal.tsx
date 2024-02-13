@@ -6,7 +6,7 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
     const [recipeTitle, setRecipeTitle] = useState('');
     const [ingredients, setIngredients] = useState([{ name: '', quantity: '' }]);
     const [instructions, setInstructions] = useState(['']);
-    const [note, setNote] = useState(['']);
+    const [notes, setNotes] = useState(['']);
 
     // Function to add a new ingredient to the form
     const addIngredient = () => {
@@ -34,20 +34,20 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
 
     // Function to add new note text field
     const addNote = () => {
-        setNote([...note, '']);
+        setNotes([...notes, '']);
     };
 
     const removeNote = (index: number) => {
-        const updatedNote = [...note];
+        const updatedNote = [...notes];
         updatedNote.splice(index, 1);
-        setNote(updatedNote);
+        setNotes(updatedNote);
     }
 
     // Function to handle changes in note details
     const handleNoteChange = (index: number, value: string) => {
-        const updatedNote = [...note];
+        const updatedNote = [...notes];
         updatedNote[index] = value;
-        setNote(updatedNote);
+        setNotes(updatedNote);
     };
 
     // Function to add a new instruction to the form
@@ -78,7 +78,7 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
             //|| ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) 
             return;
 
-        saveNewRecipe(recipeTitle, ingredients, instructions, note);
+        saveNewRecipe(recipeTitle, ingredients, instructions, notes);
         // Clear all the state variables
         setRecipeTitle('');
         setIngredients([{ name: '', quantity: '' }]);
@@ -149,10 +149,10 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
                         </TouchableOpacity>
 
                         {/* Recipe Notes */}
-                        {note.map((note, index) => (
+                        {notes.map((notes, index) => (
                             <View key={index} style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
                                 <TextInput
-                                    value={note}
+                                    value={notes}
                                     onChangeText={(value) => handleNoteChange(index, value)}
                                     placeholder='Notes'
                                     style={styles.input}
@@ -215,7 +215,8 @@ const styles = StyleSheet.create({
         borderColor: '#F887A8',
         borderRadius: 4,
         paddingLeft: '5%',
-        marginLeft: '5%'
+        marginLeft: '5%',
+        //marginBottom: '2%' spacing around text boxes
     },
 
     button: {
@@ -248,7 +249,7 @@ const styles = StyleSheet.create({
 
     ingredientContainer: {
         //flexDirection: 'column', // Change to column direction
-        marginBottom: 10, // Adjust margin as needed
+        //marginBottom: 10, // Adjust margin as needed
         width: '90%',
     },
 

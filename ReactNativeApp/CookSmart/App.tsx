@@ -29,7 +29,7 @@ function App(): React.JSX.Element {
   // * INSERTING DATA
 
   // Function to add a new recipe to the database
-  const addNewRecipe = async (recipeTitle: string, ingredients: { name: string, quantity: string }[], instructions: string[]) => {
+  const addNewRecipe = async (recipeTitle: string, ingredients: { name: string, quantity: string }[], instructions: string[], notes: string[]) => {
 
     // Recipe title
     const { data: Recipes, error: recipeError } = await supabase
@@ -79,15 +79,23 @@ function App(): React.JSX.Element {
       .insert(instructionsData)
       .select('*');
 
-    //print ingredient data
-    console.log('Ingredient Data\n', ingredientsData);
-    console.log('\nRecipe Ingredient Data\n', recipeIngredientsData);
+    // Notes Data
+    const notesData = notes.map((note, index) => ({
+      recipeid: recipeId,
+      note: note,
+    }))
+
+    const { data: Notes, error: noteError } = await supabase
+      .from('notes')
+      .insert(notesData)
+      .select('*');
 
     // Log errors
     if (recipeError) console.log('Recipe Error:', recipeError);
     if (ingredientError) console.log('Ingredient Error:', ingredientError);
     if (recipeIngredientError) console.log('Recipe Ingredient Error:', recipeIngredientError);
     if (instructionError) console.log('Instruction Error:', instructionError);
+    if (noteError) console.log('Note Error:', noteError);
 
 
     return Recipes;
@@ -95,8 +103,8 @@ function App(): React.JSX.Element {
 
 
   // Function to save a new recipe
-  const saveRecipe = (recipeTitle: string, ingredients: string[], instructions: string[]) => {
-    addNewRecipe(recipeTitle, ingredients, instructions)
+  const saveRecipe = (recipeTitle: string, ingredients: string[], instructions: string[], notes: string[]) => {
+    addNewRecipe(recipeTitle, ingredients, instructions, notes)
       .then(() => {
         getRecipeName()
           .then((recipes) => {
