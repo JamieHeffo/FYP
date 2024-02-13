@@ -32,6 +32,24 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
         setIngredients(updatedIngredients);
     };
 
+    // Function to add new note text field
+    const addNote = () => {
+        setNote([...note, '']);
+    };
+
+    const removeNote = (index: number) => {
+        const updatedNote = [...note];
+        updatedNote.splice(index, 1);
+        setNote(updatedNote);
+    }
+
+    // Function to handle changes in note details
+    const handleNoteChange = (index: number, value: string) => {
+        const updatedNote = [...note];
+        updatedNote[index] = value;
+        setNote(updatedNote);
+    };
+
     // Function to add a new instruction to the form
     const addInstruction = () => {
         setInstructions([...instructions, '']);
@@ -60,7 +78,7 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
             //|| ingredients.some(ingredient => ingredient.name.length === 0 || ingredient.quantity.length === 0) 
             return;
 
-        saveNewRecipe(recipeTitle, ingredients, instructions);
+        saveNewRecipe(recipeTitle, ingredients, instructions, note);
         // Clear all the state variables
         setRecipeTitle('');
         setIngredients([{ name: '', quantity: '' }]);
@@ -100,9 +118,6 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
                                             <Text style={styles.removeButton}>X</Text>
                                         </TouchableOpacity>
 
-                                        {/* Recipe Notes */}
-                                        {/*<TextInput value={note} onChangeText={setNote} placeholder='Notes' style={styles.input}></TextInput>*/}
-
                                     </View>
                                 </View>
                             </View>
@@ -132,10 +147,29 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
                         <TouchableOpacity onPress={addInstruction}>
                             <Text style={styles.addButton}>Add Instruction</Text>
                         </TouchableOpacity>
+
+                        {/* Recipe Notes */}
+                        {note.map((note, index) => (
+                            <View key={index} style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+                                <TextInput
+                                    value={note}
+                                    onChangeText={(value) => handleNoteChange(index, value)}
+                                    placeholder='Notes'
+                                    style={styles.input}
+                                />
+                                <TouchableOpacity onPress={() => removeNote(index)}>
+                                    <Text style={styles.removeButton}>X</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ))}
+                        {/* Button to add a new instruction */}
+                        <TouchableOpacity onPress={addNote}>
+                            <Text style={styles.addButton}>Add Note</Text>
+                        </TouchableOpacity>
                     </ScrollView>
 
                     {/* Submit Button */}
-                    <TouchableOpacity style={styles.button} onPress={() => addNewRecipe()}>
+                    < TouchableOpacity style={styles.button} onPress={() => addNewRecipe()}>
                         <Text style={styles.buttonText}>Add Recipe</Text>
                     </TouchableOpacity>
                 </View>
