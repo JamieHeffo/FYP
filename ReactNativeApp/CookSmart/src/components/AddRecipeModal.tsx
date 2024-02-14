@@ -87,7 +87,7 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
     };
 
     return (
-        <Modal animationType='slide' visible={true} transparent={true}>
+        <Modal animationType='slide' visible={true} transparent={true} >
             <TouchableOpacity onPress={hideModal} style={styles.modalBackDrop} activeOpacity={1}>
                 <View style={styles.newItemForm}>
                     <Text style={styles.heading}>Add Custom Recipe</Text>
@@ -183,7 +183,7 @@ export default ModalComponent;
 const styles = StyleSheet.create({
     modalBackDrop: {
         flex: 1,
-        backgroundColor: '#847DA4',
+        //backgroundColor: '#847DA4',
         alignItems: 'center',
         justifyContent: 'flex-end',
     },
