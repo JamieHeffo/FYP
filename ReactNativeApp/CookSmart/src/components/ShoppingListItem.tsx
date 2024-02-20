@@ -1,23 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const ToDoItem = (props) => {
+const ShoppingListItem = (props) => {
     return (
         <View style={styles.mainView}>
             <View style={styles.Item}>
-                <Text style={styles.ToDoText}>{props.item.title}</Text>
-                <Text style={styles.ToDoText}>Calories : {props.item.calories}</Text>
-                <Text style={styles.ToDoText}>Time : 40 Minutes</Text>
+                <Text style={styles.ToDoText}>{props.item.name} - {props.item.amount}</Text>
+
             </View>
         </View>
     )
 }
-export default ToDoItem;
+export default ShoppingListItem;
 
 const styles = StyleSheet.create({
     Item: {
         width: '100%',
-        height: 80,
+        height: 40,
         borderWidth: 1,
         backgroundColor: '#FFFFFF',
         borderColor: '#F887A8',

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, FlatList } from 'react-native';
 import { supabase } from '../supabase/supabase';
 import AddIcon from '../src/assets/AddIconImage.png';
-import ToDoItem from '../src/components/ToDoItem';
+import RecipeCard from '../src/components/RecipeCard';
 import AddRecipeModal from '../src/components/AddRecipeModal';
 import Tabs from '../navigation/tabs';
 
@@ -122,7 +122,7 @@ function App(): React.JSX.Element {
                 <FlatList
                     data={recipeName}
                     renderItem={({ item, index }) => (
-                        <ToDoItem item={item} />
+                        <RecipeCard item={item} />
                     )}
                     keyExtractor={item => item.recipeid.toString()}
                 />
