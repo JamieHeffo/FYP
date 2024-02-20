@@ -4,6 +4,8 @@ import { supabase } from './supabase/supabase';
 import AddIcon from './src/assets/AddIconImage.png';
 import ToDoItem from './src/components/ToDoItem';
 import AddRecipeModal from './src/components/AddRecipeModal';
+import { NavigationContainer } from '@react-navigation/native';
+import Tabs from './navigation/tabs';
 
 function App(): React.JSX.Element {
   const [recipeName, setRecipeName] = useState([]);
@@ -131,7 +133,12 @@ function App(): React.JSX.Element {
       </View>
 
       {showModal ? <AddRecipeModal saveNewRecipe={saveRecipe} hideModal={() => setShowModal(false)} /> : null}
+      <NavigationContainer>
+        <Tabs />
+      </NavigationContainer>
     </SafeAreaView>
+
+
   );
 }
 
