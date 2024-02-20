@@ -53,7 +53,7 @@ const Tabs = () => {
                     tabBarIcon: ({ focused }) => (
                         <View style={{ alignItems: 'center', justifyContent: 'center', top: 10 }}>
                             <Image
-                                source={require('../src/assets/icons/food.png')}
+                                source={require('../src/assets/icons/menu.png')}
                                 resizeMode='contain'
                                 style={{
                                     width: 25,

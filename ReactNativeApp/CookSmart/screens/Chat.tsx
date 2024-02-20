@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import ToDoItem from '../src/components/ToDoItem';
-import AddRecipeModal from '../src/components/AddRecipeModal';
 
 const Chat = ({ navigation }) => {
 
@@ -19,7 +17,7 @@ const Chat = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: '#F887A8'
+        //backgroundColor: '#F887A8'
     },
 
     scrollView: {
