@@ -1,4 +1,5 @@
 import React from 'react';
+import { Colors } from '../src/assets/Colors';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
 
 const PhotoRecipe = ({ navigation }) => {
@@ -17,19 +18,18 @@ const PhotoRecipe = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: '#F887A8'
+        backgroundColor: Colors.TEAL_LIGHT,
     },
 
     scrollView: {
         flex: 1,
-        backgroundColor: '#847DA4',
         padding: '5%',
     },
 
     heading: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: '#F887A8',
+        color: Colors.TEAL,
         marginTop: '5%',
         marginBottom: '5%'
     },

@@ -121,6 +121,50 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
 
                                     </View>
                                 </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <TextInput
+                                        value={ingredient.name}
+                                        onChangeText={(value) => handleIngredientChange(index, 'name', value)}
+                                        placeholder='Ingredient'
+                                        style={[styles.input, { width: '75%' }]}
+                                    />
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '30%' }}>
+                                        <TextInput
+                                            keyboardType="numeric"
+                                            value={ingredient.quantity}
+                                            onChangeText={(value) => handleIngredientChange(index, 'quantity', value)}
+                                            placeholder='g'
+                                            style={[styles.input, { width: '60%', marginLeft: '25%' }]}
+                                        />
+
+                                        <TouchableOpacity onPress={() => removeIngredient(index)}>
+                                            <Text style={styles.removeButton}>X</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <TextInput
+                                        value={ingredient.name}
+                                        onChangeText={(value) => handleIngredientChange(index, 'name', value)}
+                                        placeholder='Ingredient'
+                                        style={[styles.input, { width: '75%' }]}
+                                    />
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '30%' }}>
+                                        <TextInput
+                                            keyboardType="numeric"
+                                            value={ingredient.quantity}
+                                            onChangeText={(value) => handleIngredientChange(index, 'quantity', value)}
+                                            placeholder='g'
+                                            style={[styles.input, { width: '60%', marginLeft: '25%' }]}
+                                        />
+
+                                        <TouchableOpacity onPress={() => removeIngredient(index)}>
+                                            <Text style={styles.removeButton}>X</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+                                </View>
                             </View>
                         ))}
 
@@ -142,6 +186,7 @@ const ModalComponent = ({ saveNewRecipe, hideModal }) => {
                                     <Text style={styles.removeButton}>X</Text>
                                 </TouchableOpacity>
                             </View>
+
                         ))}
 
                         {/* Button to add a new instruction */}

@@ -5,6 +5,8 @@ import ShoppingListItem from '../src/components/ShoppingListItem';
 import { Colors } from '../src/assets/Colors';
 
 const ShoppingList = () => {
+
+    // State to store the ingredient data
     const [ingredients, setIngredients] = useState([]);
 
     // Function to get recipe ID where recipes are on the shopping list
@@ -19,30 +21,32 @@ const ShoppingList = () => {
             // Handle the error (e.g., show an error message to the user)
             return [];
         }
-        console.log('RecipeID : ', recipeIDData);
+        console.log('RecipeID : \n', recipeIDData);
         return recipeIDData;
     }
-    getRecipeID();
+
+    //Take the recipe ID and use it to find which ingredients are nee for that recipe
 
     // Function to get ingredient amounts from the database
-    const getIngredientAmounts = async () => {
+    const getIngredientAmounts = async (recipeIDs) => {
         let { data: amountsData, error } = await supabase
             .from('recipeingredients')
-            .select('*');
+            .select('*')
+            .in('recipeid', recipeIDs);
 
         if (error) {
             console.error("Error fetching ingredient amounts:", error);
             // Handle the error (e.g., show an error message to the user)
             return [];
         }
-        console.log('Amounts:', amountsData);
+        console.log('Amounts : \n', amountsData);
         return amountsData;
     }
-    getIngredientAmounts();
 
+    //ingredients data links recipeID to ingredientID
 
     // Function to get ingredient data from the database
-    const getIngredients = async () => {
+    const getIngredients = async (ingredientIDs) => {
         let { data: ingredientsData, error } = await supabase
             .from('ingredients')
             .select('*');
@@ -52,30 +56,65 @@ const ShoppingList = () => {
             // Handle the error (e.g., show an error message to the user)
             return [];
         }
-        console.log('Ingredients:', ingredientsData);
+        console.log('Ingredients : \n', ingredientsData);
         return ingredientsData;
     }
-    getIngredients
 
+    //Take the ingredient ID and ue it to find the ingredient name
 
-
-    // Hook to fetch ingredient data when the component mounts
+    // Use the retrieved recipe IDs to fetch ingredient amounts
     useEffect(() => {
         const fetchData = async () => {
-            const ingredientsData = await getIngredients();
-            const amountsData = await getIngredientAmounts();
+            try {
+                // Step 1: Fetch Recipe IDs
+                const recipeIDs = await getRecipeID();
 
-            // Combine the data based on a shared identifier (e.g., ingredient ID)
-            const combinedData = ingredientsData.map(ingredient => ({
-                ...ingredient,
-                amount: amountsData.find(amount => amount.ingredientid === ingredient.ingredientid)?.amount || 0,
-            }));
+                // Step 2: Fetch Ingredient Amounts for Recipe IDs
+                const amountsData = await getIngredientAmounts(recipeIDs.map(entry => entry.recipeid));
 
-            setIngredients(combinedData);
+                // Step 3: Extract Ingredient IDs from Amounts Data
+                const ingredientIDs = amountsData.map(entry => entry.ingredientid);
+
+                // Step 4: Fetch Ingredient Data for Ingredient IDs
+                const ingredientsData = await getIngredients(ingredientIDs);
+
+                // Step 5: Combine Data based on Ingredient ID
+                const combinedData = amountsData.map(amountEntry => ({
+                    ...amountEntry,
+                    ingredient: ingredientsData.find(ingredient => ingredient.ingredientid === amountEntry.ingredientid),
+                }));
+
+                setIngredients(combinedData);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // Handle the error (e.g., show an error message to the user)
+            }
         };
 
         fetchData();
-    }, []);
+    }, []); // Ensure this effect runs only once on component mount
+
+
+
+
+    /*     // Hook to fetch ingredient data when the component mounts
+        useEffect(() => {
+            const fetchData = async () => {
+                const ingredientsData = await getIngredients();
+                const amountsData = await getIngredientAmounts();
+     
+                // Combine the data based on a shared identifier (e.g., ingredient ID)
+                const combinedData = ingredientsData.map(ingredient => ({
+                    ...ingredient,
+                    amount: amountsData.find(amount => amount.ingredientid === ingredient.ingredientid)?.amount || 0,
+                }));
+     
+                setIngredients(combinedData);
+            };
+     
+            fetchData(); 
+        }, []);*/
+
 
     return (
         <SafeAreaView style={styles.mainView}>

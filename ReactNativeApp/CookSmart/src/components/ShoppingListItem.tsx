@@ -6,7 +6,7 @@ const ShoppingListItem = (props) => {
     return (
         <View style={styles.mainView}>
             <View style={styles.Item}>
-                <Text style={styles.ToDoText}>{props.item.name} - {props.item.amount}g</Text>
+                <Text style={styles.ToDoText}>{props.item.ingredient.name} - {props.item.amount}g</Text>
 
             </View>
         </View>
@@ -20,10 +20,19 @@ const styles = StyleSheet.create({
         height: 40,
         borderWidth: 1,
         backgroundColor: '#FFFFFF',
-        borderColor: Colors.TEAL,
+        borderColor: Colors.TEAL_MID,
         borderRadius: 5,
-        marginTop: 8,
+        marginTop: '3 %',
         justifyContent: 'center',
+        //Shadow Style
+        shadowColor: '#7F5DF0',
+        shadowOffset: {
+            width: 0,
+            height: 10
+        },
+        shadowOpacity: 0.10,
+        shadowRadius: 3.5,
+        elevation: 5
     },
 
     mainView: {
