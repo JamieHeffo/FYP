@@ -6,7 +6,7 @@ project = rf.workspace().project("vegetables-xfglo")
 model = project.version(1).model
 
 # Path to the image file
-filePath = "TrainingDataV1/Test4.jpg"
+filePath = "TrainingDataV1/Test.jpg"
 
 # save prediction to  file
 model.predict(filePath, confidence=40, overlap=30).save("DetectionResult.jpg")

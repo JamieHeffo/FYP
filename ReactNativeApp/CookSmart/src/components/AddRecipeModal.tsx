@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Colors } from "../assets/Colors";
 import { View, Modal, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 
 const ModalComponent = ({ saveNewRecipe, hideModal }) => {
@@ -183,7 +184,6 @@ export default ModalComponent;
 const styles = StyleSheet.create({
     modalBackDrop: {
         flex: 1,
-        //backgroundColor: '#847DA4',
         alignItems: 'center',
         justifyContent: 'flex-end',
     },
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '90%',
         borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.WHITE,
         justifyContent: 'center',
         //alignItems: 'center', moves everything to the middle which messes with text boxes
 
@@ -200,10 +200,11 @@ const styles = StyleSheet.create({
 
     heading: {
         fontWeight: 'bold',
-        fontSize: 15,
-        marginBottom: 10,
+        color: Colors.TEAL,
+        fontSize: 25,
+        marginBottom: '5%',
         marginTop: 10,
-        marginLeft: '5%'
+        marginLeft: '5%',
     },
 
     input: {
@@ -211,8 +212,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         height: 40,
         borderWidth: 1,
-        backgroundColor: '#FFFFFF',
-        borderColor: '#F887A8',
+        backgroundColor: Colors.WHITE,
+        borderColor: Colors.TEAL_MID,
         borderRadius: 4,
         paddingLeft: '5%',
         marginLeft: '5%',
@@ -225,24 +226,24 @@ const styles = StyleSheet.create({
         width: '90%',
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#F887A8',
+        backgroundColor: Colors.TEAL,
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: '5%'//aligns the button in the centre
     },
 
     buttonText: {
-        color: '#FFFFFF'
+        color: Colors.WHITE
     },
 
     addButton: {
-        color: '#3498db',
+        color: Colors.TEAL,
         //marginTop: 10,
         paddingLeft: '5%'
     },
 
     removeButton: {
-        color: '#e74c3c',
+        color: Colors.RED,
         marginTop: 10,
         marginLeft: '10%',
     },

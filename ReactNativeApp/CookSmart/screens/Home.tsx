@@ -5,6 +5,7 @@ import AddIcon from '../src/assets/AddIconImage.png';
 import RecipeCard from '../src/components/RecipeCard';
 import AddRecipeModal from '../src/components/AddRecipeModal';
 import Tabs from '../navigation/tabs';
+import { Colors } from '../src/assets/Colors';
 
 function App(): React.JSX.Element {
     const [recipeName, setRecipeName] = useState([]);
@@ -141,19 +142,19 @@ function App(): React.JSX.Element {
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: '#F887A8'
+        backgroundColor: Colors.TEAL_LIGHT,
     },
 
     scrollView: {
         flex: 1,
-        backgroundColor: '#847DA4',
+        backgroundColor: Colors.TEAL_LIGHT,
         padding: '5%',
     },
 
     heading: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: '#F887A8',
+        color: Colors.TEAL,
         marginTop: '5%',
         marginBottom: '5%'
     },

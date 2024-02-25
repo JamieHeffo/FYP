@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { Colors } from '../assets/Colors';
 
 const ShoppingListItem = (props) => {
     return (
         <View style={styles.mainView}>
             <View style={styles.Item}>
-                <Text style={styles.ToDoText}>{props.item.name} - {props.item.amount}</Text>
+                <Text style={styles.ToDoText}>{props.item.name} - {props.item.amount}g</Text>
 
             </View>
         </View>
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
         height: 40,
         borderWidth: 1,
         backgroundColor: '#FFFFFF',
-        borderColor: '#F887A8',
+        borderColor: Colors.TEAL,
         borderRadius: 5,
         marginTop: 8,
         justifyContent: 'center',

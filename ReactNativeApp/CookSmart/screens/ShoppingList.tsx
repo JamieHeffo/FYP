@@ -2,24 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList } from 'react-native';
 import { supabase } from '../supabase/supabase';
 import ShoppingListItem from '../src/components/ShoppingListItem';
+import { Colors } from '../src/assets/Colors';
 
-const ShoppingList = ({ navigation }) => {
+const ShoppingList = () => {
     const [ingredients, setIngredients] = useState([]);
 
-    // Function to get ingredient data from the database
-    const getIngredients = async () => {
-        let { data: ingredientsData, error } = await supabase
-            .from('ingredients')
-            .select('*');
+    // Function to get recipe ID where recipes are on the shopping list
+    const getRecipeID = async () => {
+        let { data: recipeIDData, error } = await supabase
+            .from('recipes')
+            .select('recipeid')
+            .eq('onshoppinglist', true);
 
         if (error) {
-            console.error("Error fetching ingredients:", error);
+            console.error("Error fetching recipe ID:", error);
             // Handle the error (e.g., show an error message to the user)
             return [];
         }
-
-        return ingredientsData;
+        console.log('RecipeID : ', recipeIDData);
+        return recipeIDData;
     }
+    getRecipeID();
 
     // Function to get ingredient amounts from the database
     const getIngredientAmounts = async () => {
@@ -32,9 +35,29 @@ const ShoppingList = ({ navigation }) => {
             // Handle the error (e.g., show an error message to the user)
             return [];
         }
-
+        console.log('Amounts:', amountsData);
         return amountsData;
     }
+    getIngredientAmounts();
+
+
+    // Function to get ingredient data from the database
+    const getIngredients = async () => {
+        let { data: ingredientsData, error } = await supabase
+            .from('ingredients')
+            .select('*');
+
+        if (error) {
+            console.error("Error fetching ingredients:", error);
+            // Handle the error (e.g., show an error message to the user)
+            return [];
+        }
+        console.log('Ingredients:', ingredientsData);
+        return ingredientsData;
+    }
+    getIngredients
+
+
 
     // Hook to fetch ingredient data when the component mounts
     useEffect(() => {
@@ -73,22 +96,23 @@ const ShoppingList = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: '#F887A8'
+        backgroundColor: Colors.TEAL_LIGHT
     },
 
     scrollView: {
         flex: 1,
-        backgroundColor: '#847DA4',
+        backgroundColor: Colors.TEAL_LIGHT,
         padding: '5%',
     },
 
     heading: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: '#F887A8',
+        color: Colors.TEAL,
         marginTop: '5%',
         marginBottom: '5%'
     },
 });
 
 export default ShoppingList;
+``
