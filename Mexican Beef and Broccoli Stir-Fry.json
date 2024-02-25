@@ -1,0 +1,95 @@
+{
+  "Users": [
+    {
+      "UserID": 1,
+      "Username": "Jamie"
+    }
+  ],
+  "Ingredients": [
+    {
+      "IngredientID": 1,
+      "Name": "Broccoli"
+    },
+    {
+      "IngredientID": 2,
+      "Name": "Carrot"
+    },
+    {
+      "IngredientID": 3,
+      "Name": "Onion"
+    },
+    {
+      "IngredientID": 4,
+      "Name": "Beef"
+    }
+  ],
+  "Recipes": [
+    {
+      "RecipeID": 1,
+      "UserID": 1,
+      "Title": "Mexican Beef and Broccoli Stir-Fry",
+      "Calories": 400
+    }
+  ],
+  "RecipeIngredients": [
+    {
+      "RecipeID": 1,
+      "IngredientID": 1,
+      "Amount": 1
+    },
+    {
+      "RecipeID": 1,
+      "IngredientID": 2,
+      "Amount": 2
+    },
+    {
+      "RecipeID": 1,
+      "IngredientID": 3,
+      "Amount": 1
+    },
+    {
+      "RecipeID": 1,
+      "IngredientID": 4,
+      "Amount": 1
+    }
+  ],
+  "Instructions": [
+    {
+      "InstructionID": 1,
+      "RecipeID": 1,
+      "StepNumber": 1,
+      "Description": "Heat oil in a pan over medium heat."
+    },
+    {
+      "InstructionID": 2,
+      "RecipeID": 1,
+      "StepNumber": 2,
+      "Description": "Add sliced beef and stir-fry until browned."
+    },
+    {
+      "InstructionID": 3,
+      "RecipeID": 1,
+      "StepNumber": 3,
+      "Description": "Add chopped onion, carrot, and broccoli. Stir-fry for a few minutes."
+    },
+    {
+      "InstructionID": 4,
+      "RecipeID": 1,
+      "StepNumber": 4,
+      "Description": "Season with Mexican spices and soy sauce. Cook until vegetables are tender."
+    },
+    {
+      "InstructionID": 5,
+      "RecipeID": 1,
+      "StepNumber": 5,
+      "Description": "Serve hot and enjoy!"
+    }
+  ],
+  "Notes": [
+    {
+      "NoteID": 1,
+      "RecipeID": 1,
+      "AdditionalNotes": "Feel free to add some chili flakes for extra spice."
+    }
+  ]
+}
