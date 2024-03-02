@@ -1,4 +1,42 @@
 {
   "name": "CookSmart",
-  "displayName": "CookSmart"
+  "displayName": "CookSmart",
+  "plugins": [
+    [
+      "react-native-vision-camera",
+      {
+        "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+        "enableMicrophonePermission": true,
+        "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+      }
+    ]
+  ],
+  "android": {
+    "permissions": [
+      "android.permission.CAMERA",
+      "android.permission.RECORD_AUDIO"
+    ],
+    "package": "com.jamieheffk.cooksmart"
+  },
+  "ios": {
+    "infoPlist": {
+      "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
+      "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) needs access to your Microphone."
+    },
+    "bundleIdentifier": "com.jamieheffk.cooksmart"
+  },
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "17ca883a-32e1-4f97-a907-4440d1e30cb5"
+      }
+    },
+    "owner": "jamieheffk",
+    "android": {
+      "package": "com.jamieheffk.cooksmart"
+    },
+    "ios": {
+      "bundleIdentifier": "com.jamieheffk.cooksmart"
+    }
+  }
 }
