@@ -13,20 +13,23 @@ const PhotoRecipe = ({ navigation }) => {
         physicalDevices: ['wide-angle-camera']
     })
 
+
     //if (device == null) return <NoCameraDeviceError />
 
     return (
         <SafeAreaView style={styles.mainView}>
             <View style={styles.scrollView}>
                 <Text style={styles.heading}>Generate Recipe</Text>
+                <Camera // time to style :)
+                    style={StyleSheet.absoluteFill}
+                    height={300}
+                    ref={cameraRef}
+                    device={device}
+                    isActive={true}
+                />
             </View>
 
-            <Camera
-                style={StyleSheet.absoluteFill}
-                ref={cameraRef}
-                device={device}
-                isActive={true}
-            />
+
 
         </SafeAreaView>
     );
