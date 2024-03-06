@@ -1,16 +1,17 @@
 import React from 'react';
 import { Colors } from '../src/assets/Colors';
-import { Camera } from 'react-native-vision-camera';
+import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
 
 const PhotoRecipe = ({ navigation }) => {
 
     const cameraPermission = Camera.getCameraPermissionStatus()
     const microphonePermission = Camera.getMicrophonePermissionStatus()
+    const cameraRef = React.useRef(null);
 
     const device = useCameraDevice('back')
 
-    if (device == null) return <NoCameraDeviceError />
+    //if (device == null) return <NoCameraDeviceError />
 
     return (
         <SafeAreaView style={styles.mainView}>
@@ -20,6 +21,7 @@ const PhotoRecipe = ({ navigation }) => {
 
             <Camera
                 style={StyleSheet.absoluteFill}
+                ref={cameraRef}
                 device={device}
                 isActive={true}
             />
