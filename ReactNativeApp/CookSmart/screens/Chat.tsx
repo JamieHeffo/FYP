@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import { supabase } from '../supabase/supabase';
+//import { supabase } from '../supabase/supabase';
 
 
 const Chat = ({ navigation }) => {

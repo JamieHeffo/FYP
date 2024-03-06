@@ -1,6 +1,3 @@
-2024-03-06 13:39:37.815 xcodebuild[88638:15831218] Writing error result bundle to /var/folders/py/6l01gxss5p7648qk39k9jw_h0000gn/T/ResultBundle_2024-06-03_13-39-0037.xcresult
-xcodebuild: error: Unable to find a destination matching the provided destination specifier:
-		{ id:3F4FC83D-2638-4DD8-8F3C-6AD72370FB76 }
-
-	Ineligible destinations for the "CookSmart" scheme:
-		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 17.4 is not installed. To use with Xcode, first download and install the platform }
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, id:0FBE6659-A474-40B6-A3C3-D93EF6138A83, OS:17.2, name:iPhone 15 Pro Max }
+{ platform:iOS Simulator, id:0FBE6659-A474-40B6-A3C3-D93EF6138A83, OS:17.2, name:iPhone 15 Pro Max }

@@ -4,7 +4,7 @@ import Tabs from './navigation/tabs';
 import 'react-native-url-polyfill/auto';
 import { supabase } from './supabase/supabase';
 import Auth from './src/components/Auth';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Session } from '@supabase/supabase-js';
 import { Colors } from './src/assets/Colors';
 
