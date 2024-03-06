@@ -1,12 +1,21 @@
 import React from 'react';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import { supabase } from '../supabase/supabase';
+
 
 const Chat = ({ navigation }) => {
 
+    const handleLogout = async () => {
+        // Navigate to the login screen or any other appropriate screen after logout
+        await supabase.auth.signOut();
+    };
     return (
         <SafeAreaView style={styles.mainView}>
             <View style={styles.scrollView}>
-                <Text style={styles.heading}>Ask The Chef</Text>
+                {/*<Text style={styles.heading}>Ask The Chef</Text>*/}
+                <TouchableOpacity onPress={handleLogout}>
+                    <Text>Log Out</Text>
+                </TouchableOpacity>
             </View>
 
         </SafeAreaView>

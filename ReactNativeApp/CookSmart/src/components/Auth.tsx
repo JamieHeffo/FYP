@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { Alert, StyleSheet, View, AppState } from 'react-native'
 import { supabase } from '../../supabase/supabase'
+import { Colors } from '../assets/Colors'
 import { Button, Input } from 'react-native-elements'
+import { TextInput, Image } from 'react-native'
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
 // `onAuthStateChange` events with the `TOKEN_REFRESHED` or `SIGNED_OUT` event
 // if the user's session is terminated. This should only be registered once.
+
 AppState.addEventListener('change', (state) => {
     if (state === 'active') {
         supabase.auth.startAutoRefresh()
@@ -15,7 +18,7 @@ AppState.addEventListener('change', (state) => {
     }
 })
 
-export default function Auth() {
+export default function Auth(onLogin) {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -48,10 +51,12 @@ export default function Auth() {
 
     return (
         <View style={styles.container}>
+            <Image
+                source={require('../assets/roboChef.png')}
+                style={{ width: 200, height: 200, alignSelf: 'center' }}
+            />
             <View style={[styles.verticallySpaced, styles.mt20]}>
-                <Input
-                    label="Email"
-                    leftIcon={{ type: 'font-awesome', name: 'envelope' }}
+                <TextInput style={styles.inputBox}
                     onChangeText={(text) => setEmail(text)}
                     value={email}
                     placeholder="email@address.com"
@@ -59,9 +64,7 @@ export default function Auth() {
                 />
             </View>
             <View style={styles.verticallySpaced}>
-                <Input
-                    label="Password"
-                    leftIcon={{ type: 'font-awesome', name: 'lock' }}
+                <TextInput style={styles.inputBox}
                     onChangeText={(text) => setPassword(text)}
                     value={password}
                     secureTextEntry={true}
@@ -70,19 +73,28 @@ export default function Auth() {
                 />
             </View>
             <View style={[styles.verticallySpaced, styles.mt20]}>
-                <Button title="Sign in" disabled={loading} onPress={() => signInWithEmail()} />
+                <Button style={styles.buttons}
+                    title="Sign in"
+                    disabled={loading}
+                    onPress={() => signInWithEmail()}
+                />
             </View>
             <View style={styles.verticallySpaced}>
-                <Button title="Sign up" disabled={loading} onPress={() => signUpWithEmail()} />
+                <Button style={styles.buttons}
+                    title="Sign up"
+                    titleStyle={{ color: Colors.TEAL_LIGHT }}
+                    disabled={loading}
+                    onPress={() => signUpWithEmail()}
+                />
             </View>
-        </View>
+        </View >
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 40,
-        padding: 12,
+        marginTop: '50%',
+        padding: '5%',
     },
     verticallySpaced: {
         paddingTop: 4,
@@ -92,4 +104,38 @@ const styles = StyleSheet.create({
     mt20: {
         marginTop: 20,
     },
+    inputBox: {
+        backgroundColor: '#FFFFFF',
+        height: 44,
+        marginHorizontal: 16,
+        paddingLeft: '5%',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    buttons: {
+        marginBottom: '2%',
+        width: '90%',
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: Colors.TEAL,
+        alignItems: 'center',
+        marginHorizontal: '5%',//aligns the button in the centre
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    }
 })
