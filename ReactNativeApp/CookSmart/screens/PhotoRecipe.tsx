@@ -9,7 +9,9 @@ const PhotoRecipe = ({ navigation }) => {
     const microphonePermission = Camera.getMicrophonePermissionStatus()
     const cameraRef = React.useRef(null);
 
-    const device = useCameraDevice('back')
+    const device = useCameraDevice('back', {
+        physicalDevices: ['wide-angle-camera']
+    })
 
     //if (device == null) return <NoCameraDeviceError />
 
