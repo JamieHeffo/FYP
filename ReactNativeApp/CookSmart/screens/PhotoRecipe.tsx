@@ -1,7 +1,9 @@
 import React from 'react';
+import axios from 'axios';
 import { Colors } from '../src/assets/Colors';
 import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import RNFS from 'react-native-fs';
 
 const PhotoRecipe = ({ navigation }) => {
 
@@ -26,8 +28,39 @@ const PhotoRecipe = ({ navigation }) => {
                     flash: 'off',
                     enableShutterSound: false
                 });
-                console.log('Photo taken:', photo);
-                // Handle the captured photo as needed
+
+                // Print details to log to check if its working
+                //console.log('Photo taken:', photo);
+
+                // Use the URI of the captured photo
+                const photoUri = photo.path || photo.uri;
+
+                // Use react-native-fs to read the file
+                //const imageData = await RNFS.readFile(photo.path, 'base64').then(base64data => {
+                //    return `data:image/jpeg;base64,${base64data}`;
+                //});
+
+                //console.log('Image data:', imageData);
+
+                const formData = new FormData();
+                formData.append('file', {
+                    uri: photoUri,
+                    name: 'photo.jpg',
+                    type: 'image/jpeg'
+                });
+
+                const response = await axios.post('https://detect.roboflow.com/vegetables-xfglo/1', formData, {
+                    params: {
+                        api_key: "pVgrgJI8kfW40jASdT4Y"
+                    },
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+
+                console.log('Roboflow response:', response.data);
+
+
             } catch (error) {
                 // Log or handle the error if photo capture fails
                 console.error(error);
