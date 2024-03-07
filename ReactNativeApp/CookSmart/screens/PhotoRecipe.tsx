@@ -16,42 +16,88 @@ const PhotoRecipe = ({ navigation }) => {
 
     //if (device == null) return <NoCameraDeviceError />
 
+    // Function to take a photo using the camera component
+    const takePhoto = async () => {
+        if (cameraRef.current) {
+            try {
+                // Capture the photo with specified settings
+                const photo = await cameraRef.current.takePhoto({
+                    qualityPrioritization: 'speed',
+                    flash: 'off',
+                    enableShutterSound: false
+                });
+                console.log('Photo taken:', photo);
+                // Handle the captured photo as needed
+            } catch (error) {
+                // Log or handle the error if photo capture fails
+                console.error(error);
+                Alert.alert("Error", "Failed to take photo.");
+            }
+        }
+    };
+
     return (
-        <SafeAreaView style={styles.mainView}>
-            <View style={styles.scrollView}>
-                <Text style={styles.heading}>Generate Recipe</Text>
-                <Camera // time to style :)
-                    style={StyleSheet.absoluteFill}
-                    height={300}
+        <SafeAreaView style={styles.whole}>
+            <Text style={styles.heading}>Generate Recipe</Text>
+            <View>
+                <Camera style={styles.camera}
                     ref={cameraRef}
                     device={device}
                     isActive={true}
+                    photo={true}
                 />
+                {/* Shutter Button */}
+                < TouchableOpacity style={styles.button} onPress={() => takePhoto()}>
+                    <Text style={styles.buttonText}>Capture</Text>
+                </TouchableOpacity>
             </View>
-
-
-
         </SafeAreaView>
     );
 }
 const styles = StyleSheet.create({
-    mainView: {
-        flex: 1,
+    whole: {
         backgroundColor: Colors.TEAL_LIGHT,
-    },
+        //marginHorizontal: '5%',
 
-    scrollView: {
-        flex: 1,
-        padding: '5%',
     },
 
     heading: {
+        marginHorizontal: '5%',
         fontSize: 30,
         fontWeight: 'bold',
         color: Colors.TEAL,
         marginTop: '5%',
-        marginBottom: '5%'
+        marginVertical: '5%',
+        backgroundColor: Colors.TEAL_LIGHT,
     },
+
+    camera: {
+        backgroundColor: Colors.TEAL_LIGHT,
+        height: '70%',
+        width: '100%',
+        //marginHorizontal: '2%',
+        overflow: 'hidden',
+        borderRadius: 20,
+    },
+
+    button: {
+        //paddingTop: 10,
+        marginTop: '12%',
+        marginBottom: '10%',
+        width: '90%',
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: Colors.TEAL,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: '5%'//aligns the button in the centre
+    },
+
+    buttonText: {
+        color: Colors.WHITE,
+        fontSize: 20,
+    },
+
 });
 
 export default PhotoRecipe;
