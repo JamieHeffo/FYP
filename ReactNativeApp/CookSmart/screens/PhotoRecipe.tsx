@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { Colors } from '../src/assets/Colors';
 import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
@@ -9,6 +9,7 @@ const PhotoRecipe = ({ navigation }) => {
 
     const cameraPermission = Camera.getCameraPermissionStatus()
     const microphonePermission = Camera.getMicrophonePermissionStatus()
+    const [detectedObjects, setDetectedObjects] = useState([]);
     const cameraRef = React.useRef(null);
 
     const device = useCameraDevice('back', {
@@ -20,6 +21,7 @@ const PhotoRecipe = ({ navigation }) => {
 
     // Function to take a photo using the camera component
     const takePhoto = async () => {
+
         if (cameraRef.current) {
             try {
                 // Capture the photo with specified settings
@@ -60,6 +62,19 @@ const PhotoRecipe = ({ navigation }) => {
 
                 console.log('Roboflow response:', response.data);
 
+                // Aggregate detections by class and count them
+                const counts = response.data.predictions.reduce((acc, { class: className }) => {
+                    acc[className] = (acc[className] || 0) + 1;
+                    return acc;
+                }, {});
+
+                const detectedList = Object.keys(counts).map((key, index) => ({
+                    key: String(index),
+                    label: `${counts[key]} ${key}`, // e.g., "1 Carrot", "2 Onion"
+                }));
+
+                setDetectedObjects(detectedList);
+
 
             } catch (error) {
                 // Log or handle the error if photo capture fails
@@ -79,11 +94,19 @@ const PhotoRecipe = ({ navigation }) => {
                     isActive={true}
                     photo={true}
                 />
+                <FlatList
+                    data={detectedObjects}
+                    renderItem={({ item }) => (
+                        <Text style={styles.detectedText}>{item.label}</Text>
+                    )}
+                    keyExtractor={item => item.key}
+                />
                 {/* Shutter Button */}
                 < TouchableOpacity style={styles.button} onPress={() => takePhoto()}>
                     <Text style={styles.buttonText}>Capture</Text>
                 </TouchableOpacity>
             </View>
+
         </SafeAreaView>
     );
 }
@@ -115,7 +138,7 @@ const styles = StyleSheet.create({
 
     button: {
         //paddingTop: 10,
-        marginTop: '12%',
+        //marginTop: '12%',
         marginBottom: '10%',
         width: '90%',
         height: 50,
