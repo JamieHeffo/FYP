@@ -7,6 +7,7 @@ import Auth from './src/components/Auth';
 import { View, StyleSheet } from 'react-native';
 import { Session } from '@supabase/supabase-js';
 import { Colors } from './src/assets/Colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function App(): React.JSX.Element {
   const [session, setSession] = useState<Session | null>(null);
