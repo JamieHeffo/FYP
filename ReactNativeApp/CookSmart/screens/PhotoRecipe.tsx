@@ -18,12 +18,9 @@ const PhotoRecipe = ({ navigation }) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [cameraVisible, setCameraVisible] = useState(true);
     const [inputValue, setInputValue] = useState('');
-    // Define a list of recipe styles and a state variable for the current style
-    const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American']; // Example styles
+    // List of Recipe Styles
+    const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
     const [currentStyleIndex, setCurrentStyleIndex] = useState(0); // Index of the currently selected style
-
-
-
 
     const device = useCameraDevice('back', {
         physicalDevices: ['wide-angle-camera']
@@ -31,11 +28,20 @@ const PhotoRecipe = ({ navigation }) => {
 
     // Handlder to open the modal view on generate recipe
     const handleButtonPress = () => {
+
         if (buttonLabel === 'Capture') {
             takePhoto();
         } else {
             // Open the modal when button label is 'Generate Recipe'
             setModalVisible(true);
+
+            // Create a single string with the recipe style and ingredients
+            const recipeStyle = `${recipeStyles[currentStyleIndex]}`;
+            const ingredients = `${detectedObjects.map(item => item.label).join(', ')}`;
+
+            const prompt = `Generate a ${recipeStyle} style recipe with the following ingredients : ${ingredients}`;
+
+            console.log(prompt);
         }
     };
 
@@ -158,8 +164,7 @@ const PhotoRecipe = ({ navigation }) => {
                     </View>
 
                 ) : ( //Rendered after the photo is taken and the camera disappears
-                    <View style={styles.placeholderContainer}>
-
+                    <View>
                     </View>
                 )}
 
