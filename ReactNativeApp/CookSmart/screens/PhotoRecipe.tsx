@@ -117,7 +117,7 @@ const PhotoRecipe = ({ navigation }) => {
             } catch (error) {
                 // Log or handle the error if photo capture fails
                 console.error(error);
-                Alert.alert("Error", "Failed to take photo.");
+                Alert.alert("Camera Error", "Could not take photo.");
             }
         }
     };
@@ -159,27 +159,18 @@ const PhotoRecipe = ({ navigation }) => {
 
                 ) : ( //Rendered after the photo is taken and the camera disappears
                     <View style={styles.placeholderContainer}>
-                        <Text style={styles.listText}>Ingredients Detected</Text>
+
                     </View>
                 )}
 
-
-                {!cameraVisible && ( // Show this section only when the camera is not visible
+                {/* ONLY RENDERED ONCE PHOTO IS TAKEN AND INGREDIENTS ARE DETECTED
+                    CAMERA DISSAPEARS AND FURTHER PROMPTS OPEN                   */}
+                {!cameraVisible && (
                     <>
-                        {/* List of detected objects */}
-                        <View style={styles.listContainer}>
-                            <FlatList
-                                data={detectedObjects}
-                                renderItem={({ item }) => (
-                                    <View style={styles.ingredients}>
-                                        <Text style={styles.listText}>{item.label}</Text>
-                                    </View>
-                                )}
-                                keyExtractor={item => item.key}
-                            />
-                        </View>
                         {/* Recipe Style Selector */}
-                        <View style={styles.recipeContainerOverlay}>
+                        <View style={styles.listContainer}>
+                            <Text style={styles.titleText}>Recipe Style</Text>
+
                             <View style={styles.recipeStyleContainer}>
                                 <Button
                                     title="<"
@@ -193,7 +184,20 @@ const PhotoRecipe = ({ navigation }) => {
                                     onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex + 1) % recipeStyles.length)}
                                 />
                             </View>
+
+                            {/* List of detected objects */}
+                            <Text style={styles.titleText}>Ingredients Detected</Text>
+                            <FlatList
+                                data={detectedObjects}
+                                renderItem={({ item }) => (
+                                    <View style={styles.ingredients}>
+                                        <Text style={styles.listText}>{item.label}</Text>
+                                    </View>
+                                )}
+                                keyExtractor={item => item.key}
+                            />
                         </View>
+
                         <View style={styles.addContainer}>
                             <TextInput
                                 style={styles.listText}
@@ -225,7 +229,6 @@ const styles = StyleSheet.create({
     whole: {
         backgroundColor: Colors.TEAL_LIGHT,
         flex: 1,
-        //marginHorizontal: '5%',
 
     },
 
@@ -240,7 +243,6 @@ const styles = StyleSheet.create({
     },
     cameraContainer: {
         flex: 1,
-        //height: '50%',
     }
     ,
     camera: {
@@ -260,8 +262,6 @@ const styles = StyleSheet.create({
 
     ingredients: {
         width: '100%',
-        //alignContent: 'center',
-        //height: 50,
         height: 50,
         marginBottom: '2%',
         borderWidth: 1,
@@ -279,6 +279,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.10,
         shadowRadius: 3.5,
         elevation: 5
+    },
+
+    titleText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: Colors.TEAL,
+        //marginHorizontal: '5%',
     },
 
     listText: {
@@ -324,10 +331,10 @@ const styles = StyleSheet.create({
 
     recipeStyleContainer: {
         flexDirection: 'row',
-        alignItems: 'center',// Centres Text
-        justifyContent: 'center',
-        marginHorizontal: '5%',
-        backgroundColor: '#FFF',
+        alignItems: 'center',// Centres Text vertically
+        justifyContent: 'center', // Centres text horizontally
+        //marginHorizontal: '5%',
+        backgroundColor: Colors.WHITE,
         width: '35%',
         marginBottom: '5%',
         borderRadius: 10,
