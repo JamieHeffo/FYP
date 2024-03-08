@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Colors } from '../src/assets/Colors';
 import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
-import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import RNFS from 'react-native-fs';
 
 const PhotoRecipe = ({ navigation }) => {
@@ -70,9 +70,11 @@ const PhotoRecipe = ({ navigation }) => {
 
                 const detectedList = Object.keys(counts).map((key, index) => ({
                     key: String(index),
-                    label: `${counts[key]} ${key}`, // e.g., "1 Carrot", "2 Onion"
+                    //Format the label to show the count and class
+                    label: `${counts[key]} ${key}`,
                 }));
 
+                // Set the detected objects in state
                 setDetectedObjects(detectedList);
 
 
@@ -87,27 +89,34 @@ const PhotoRecipe = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.whole}>
             <Text style={styles.heading}>Generate Recipe</Text>
-            <View>
+
+            <View style={styles.cameraContainer}>
                 <Camera style={styles.camera}
                     ref={cameraRef}
                     device={device}
                     isActive={true}
                     photo={true}
                 />
+            </View>
+            <View style={styles.listContainer}>
                 <FlatList
                     data={detectedObjects}
                     renderItem={({ item }) => (
-                        <Text style={styles.detectedText}>{item.label}</Text>
+                        <View style={styles.ingredients}>
+                            <Text style={styles.listText}>{item.label}</Text>
+                        </View>
                     )}
                     keyExtractor={item => item.key}
                 />
+            </View>
+            <View>
                 {/* Shutter Button */}
                 < TouchableOpacity style={styles.button} onPress={() => takePhoto()}>
                     <Text style={styles.buttonText}>Capture</Text>
                 </TouchableOpacity>
             </View>
 
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
 const styles = StyleSheet.create({
@@ -126,26 +135,71 @@ const styles = StyleSheet.create({
         marginVertical: '5%',
         backgroundColor: Colors.TEAL_LIGHT,
     },
-
+    cameraContainer: {
+        //flex: 1,
+        height: '50%',
+    }
+    ,
     camera: {
         backgroundColor: Colors.TEAL_LIGHT,
-        height: '70%',
+        //flex: 1,
+        height: '100%',
         width: '100%',
+        //position: 'absolute',
         //marginHorizontal: '2%',
         overflow: 'hidden',
         borderRadius: 20,
     },
 
+    listContainer: {
+        height: '20%',
+        marginHorizontal: '5%',
+        //alignContent: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.TEAL_LIGHT,
+    },
+
+    ingredients: {
+        width: '100%',
+        //alignContent: 'center',
+        //height: 50,
+        height: '80%',
+        marginBottom: 2,
+        borderWidth: 1,
+        backgroundColor: Colors.WHITE,
+        borderColor: Colors.TEAL_DARK,
+        borderRadius: 5,
+        marginTop: 2,
+        justifyContent: 'center',
+        //Shadow Style
+        shadowColor: '#7F5DF0',
+        shadowOffset: {
+            width: 0,
+            height: 10
+        },
+        shadowOpacity: 0.10,
+        shadowRadius: 3.5,
+        elevation: 5
+    },
+
+    listText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: Colors.TEAL,
+        alignSelf: 'center',
+    },
+
     button: {
         //paddingTop: 10,
         //marginTop: '12%',
-        marginBottom: '10%',
+        marginBottom: '30%',
+        //position: 'absolute',
         width: '90%',
         height: 50,
         borderRadius: 25,
         backgroundColor: Colors.TEAL,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'center',// aligns the button text in the centre
+        justifyContent: 'center',// aligns the button text in the centre vertically
         marginHorizontal: '5%'//aligns the button in the centre
     },
 
