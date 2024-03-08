@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Colors } from '../src/assets/Colors';
 import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, ScrollView, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import RNFS from 'react-native-fs';
+import RecipeGenerator from '../src/components/RecipeGenerator';
 
 const PhotoRecipe = ({ navigation }) => {
 
@@ -18,10 +18,12 @@ const PhotoRecipe = ({ navigation }) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [cameraVisible, setCameraVisible] = useState(true);
     const [inputValue, setInputValue] = useState('');
+
     // List of Recipe Styles
     const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
     const [currentStyleIndex, setCurrentStyleIndex] = useState(0); // Index of the currently selected style
 
+    // Declare camera devices
     const device = useCameraDevice('back', {
         physicalDevices: ['wide-angle-camera']
     })
@@ -135,23 +137,13 @@ const PhotoRecipe = ({ navigation }) => {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             //keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
             >
-                <Modal
-                    animationType="slide"
-                    transparent={true}
+
+                <RecipeGenerator
                     visible={isModalVisible}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                        setModalVisible(!isModalVisible);
-                    }}
-                >
-                    <View style={styles.modal}>
-                        <Text style={styles.modalText}>Generate your recipe here!</Text>
-                        <Button
-                            title="Close"
-                            onPress={() => setModalVisible(!isModalVisible)}
-                        />
-                    </View>
-                </Modal>
+                    onClose={() =>
+                        setModalVisible(false)}>
+                </RecipeGenerator>
+
                 <Text style={styles.heading}>Generate Recipe</Text>
                 {cameraVisible ? (
                     <View style={styles.cameraContainer}>
@@ -327,12 +319,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 
-    modal: {
-        marginTop: 'auto',
-        height: '86%',
-        borderRadius: 20,
-        backgroundColor: Colors.BEIGE,
-    },
 
     recipeStyleContainer: {
         flexDirection: 'row',
