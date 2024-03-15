@@ -7,10 +7,9 @@ import RecipeGenerator from '../src/components/RecipeGenerator';
 
 const PhotoRecipe = ({ navigation }) => {
 
-
+    //Camera permission variables
     const cameraPermission = Camera.getCameraPermissionStatus()
     const microphonePermission = Camera.getMicrophonePermissionStatus()
-    const [detectedObjects, setDetectedObjects] = useState([]);
     const cameraRef = React.useRef(null);
 
     // State variables to manage the camera and modal
@@ -18,6 +17,10 @@ const PhotoRecipe = ({ navigation }) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [cameraVisible, setCameraVisible] = useState(true);
     const [inputValue, setInputValue] = useState('');
+
+    //State variables to manage the recipe data
+    const [detectedObjects, setDetectedObjects] = useState([]);
+    const [recipeData, setRecipeData] = useState(null);
 
     // List of Recipe Styles
     const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
@@ -43,7 +46,10 @@ const PhotoRecipe = ({ navigation }) => {
 
             const prompt = `Generate a ${recipeStyle} style recipe with the following ingredients : ${ingredients}`;
 
+            //Call the GPT API to generate a recipe
+
             console.log(prompt);
+            generateRecipe(prompt);
         }
     };
 
@@ -60,7 +66,6 @@ const PhotoRecipe = ({ navigation }) => {
             Alert.alert("Error", "Please enter an ingredient.");
         }
     };
-
 
 
     //if (device == null) return <NoCameraDeviceError />
@@ -92,7 +97,8 @@ const PhotoRecipe = ({ navigation }) => {
 
                 const response = await axios.post('https://detect.roboflow.com/vegetables-xfglo/1', formData, {
                     params: {
-                        api_key: "pVgrgJI8kfW40jASdT4Y"
+                        //api_key: process.env.REACT_APP_ROBOFLOW_API_KEY
+                        api_key: 'pVgrgJI8kfW40jASdT4Y'
                     },
                     headers: {
                         "Content-Type": "multipart/form-data"
@@ -130,6 +136,84 @@ const PhotoRecipe = ({ navigation }) => {
         }
     };
 
+    // Function to generate a recipe using the OpenAI API
+    const generateRecipe = async (prompt) => {
+
+        // Example JSON object to send to the API
+        const jsonObject = {
+            users: [
+                {
+                    userid: "unique_user_id",
+                    username: "user_name",
+                    recipes: [
+                        {
+                            recipeid: "unique_recipe_id",
+                            title: "recipe_title",
+                            calories: "calorie_count",
+                            onshoppinglist: "FALSE",
+                            ingredients: [
+                                {
+                                    ingredientid: "unique_ingredient_id",
+                                    name: "ingredient_name",
+                                    amount: "amount_used"
+                                }
+                            ],
+                            notes: [
+                                {
+                                    noteid: "unique_note_id",
+                                    note: "note_content"
+                                }
+                            ],
+                            instructions: [
+                                {
+                                    instructionid: "unique_instruction_id",
+                                    stepnumber: "step_number",
+                                    description: "instruction_description"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            ingredients: [
+                {
+                    ingredientid: "unique_ingredient_id",
+                    name: "ingredient_name"
+                }
+            ]
+        };
+        const jsonString = JSON.stringify(jsonObject, null, 2);
+
+        try {
+            const data = {
+                model: "gpt-3.5-turbo-0125",
+                response_format: { "type": "json_object" },
+                messages: [
+                    { role: "system", content: "You are a world class Chef who specialises in teaching people who are new to cooking how to cook simple meals" },
+                    { role: "system", content: "You can assume that they have access to basic pantry items" },
+                    { role: "system", content: `You only respond in JSON objects. This is an example of a JSON object: ${jsonString}` },
+                    { role: "user", content: prompt }
+                ]
+            };
+
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', data, {
+                headers: {
+                    //'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+                    'Authorization': `Bearer `,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const messageText = response.data.choices[0].message.content;
+            console.log('OpenAI response message:', messageText);
+            // Store the response in the state
+            setRecipeData(messageText);
+        } catch (error) {
+            console.error('OpenAI API error:', error);
+            Alert.alert("API Error", "Failed to generate recipe.");
+        }
+    };
+
     return (
         <SafeAreaView style={styles.whole}>
             <KeyboardAvoidingView
@@ -140,6 +224,7 @@ const PhotoRecipe = ({ navigation }) => {
 
                 <RecipeGenerator
                     visible={isModalVisible}
+                    recipeData={recipeData}
                     onClose={() =>
                         setModalVisible(false)}>
                 </RecipeGenerator>

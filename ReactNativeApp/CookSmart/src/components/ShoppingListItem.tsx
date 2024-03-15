@@ -1,47 +1,68 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../assets/Colors';
+import CheckBox from '@react-native-community/checkbox';
 
 const ShoppingListItem = (props) => {
+    const [isSelected, setSelection] = useState(false);
+
     return (
         <View style={styles.mainView}>
-            <View style={styles.Item}>
-                <Text style={styles.ToDoText}>{props.item.ingredient.name} - {props.item.amount}g</Text>
-
+            <View style={styles.item}>
+                <CheckBox style={styles.checkbox}
+                    value={isSelected}
+                    onValueChange={setSelection}
+                    tintColors={{ true: Colors.TEAL, false: Colors.GREY }}
+                />
+                <Text style={styles.itemText}>{props.item.ingredient.name} - {props.item.amount}g</Text>
             </View>
-        </View>
-    )
-}
+        </View >
+    );
+};
+
 export default ShoppingListItem;
 
 const styles = StyleSheet.create({
-    Item: {
+    item: {
+        flexDirection: 'row', // Place checkbox and text side-by-side
+        alignItems: 'center', // Vertically center the items in the container
         width: '100%',
-        height: 40,
+        height: 60,
         borderWidth: 1,
-        backgroundColor: '#FFFFFF',
-        borderColor: Colors.TEAL_MID,
-        borderRadius: 5,
-        marginTop: '3 %',
-        justifyContent: 'center',
-        //Shadow Style
+        backgroundColor: Colors.WHITE,
+        borderColor: Colors.TEAL_DARK,
+        borderRadius: 10,
+        marginTop: 10,
+        justifyContent: 'flex-start', // Align children to the start of the container
+        padding: '5%',
         shadowColor: '#7F5DF0',
         shadowOffset: {
             width: 0,
-            height: 10
+            height: 4
         },
-        shadowOpacity: 0.10,
-        shadowRadius: 3.5,
-        elevation: 5
+        shadowOpacity: 0.30,
+        shadowRadius: 5,
+        elevation: 3
     },
 
     mainView: {
-        width: '100%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%',
+        padding: 5
     },
 
-    ToDoText: {
-        marginLeft: '10%',
+    itemText: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: Colors.TEAL,
+        marginLeft: 10, // Space between checkbox and text
     },
-})
+
+    checkbox: {
+        alignSelf: 'center',
+        paddingHorizontal: 30,
+        //height: '80%',
+        //width: '80%',
+    }
+});
