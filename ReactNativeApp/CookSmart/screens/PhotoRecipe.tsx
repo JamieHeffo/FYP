@@ -4,6 +4,7 @@ import { Colors } from '../src/assets/Colors';
 import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, ScrollView, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import RecipeGenerator from '../src/components/RecipeGenerator';
+import { useFocusEffect } from '@react-navigation/native';
 
 const PhotoRecipe = ({ navigation }) => {
 
@@ -31,6 +32,17 @@ const PhotoRecipe = ({ navigation }) => {
         physicalDevices: ['wide-angle-camera']
     })
 
+    // Useeffect hook to bring the camera back on page reset
+    useFocusEffect(
+        React.useCallback(() => {
+            setCameraVisible(true); // Show camera
+            setButtonLabel('Capture'); // Reset button label
+            setDetectedObjects([]); // Clear detected objects
+            setCurrentStyleIndex(0); // Reset recipe style index
+            setRecipeData(null); // Clear recipe data
+            return () => { };
+        }, [])
+    );
     // Handlder to open the modal view on generate recipe
     const handleButtonPress = () => {
 
@@ -149,13 +161,15 @@ const PhotoRecipe = ({ navigation }) => {
                         {
                             recipeid: "unique_recipe_id",
                             title: "recipe_title",
+                            time: "time_to_cook", // Text Field Stored in Minutes formatted HH:MM
+                            servings: "number_of_servings",// Float
                             calories: "calorie_count",
                             onshoppinglist: "FALSE",
                             ingredients: [
                                 {
                                     ingredientid: "unique_ingredient_id",
-                                    name: "ingredient_name",
-                                    amount: "amount_used"
+                                    name: "ingredient_name", // The ingredient name should be a whole ingredient. ie 'Onion', 'Tomato', 'Pasta' not 'Sliced Onion'
+                                    amount: "amount_used" // Must be INTEGER, Stored in GRAMS
                                 }
                             ],
                             notes: [
@@ -191,6 +205,7 @@ const PhotoRecipe = ({ navigation }) => {
                 messages: [
                     { role: "system", content: "You are a world class Chef who specialises in teaching people who are new to cooking how to cook simple meals" },
                     { role: "system", content: "You can assume that they have access to basic pantry items" },
+                    { role: "system", content: "Every ingredient amount in the recipe is stored in grams, so the amounts must be an integer" },
                     { role: "system", content: `You only respond in JSON objects. This is an example of a JSON object: ${jsonString}` },
                     { role: "user", content: prompt }
                 ]
@@ -199,7 +214,7 @@ const PhotoRecipe = ({ navigation }) => {
             const response = await axios.post('https://api.openai.com/v1/chat/completions', data, {
                 headers: {
                     //'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
-                    'Authorization': `Bearer `,
+                    'Authorization': ``,
                     'Content-Type': 'application/json'
                 }
             });

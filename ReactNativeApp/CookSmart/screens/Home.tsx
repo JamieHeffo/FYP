@@ -4,12 +4,72 @@ import { supabase } from '../supabase/supabase';
 import AddIcon from '../src/assets/AddIconImage.png';
 import RecipeCard from '../src/components/RecipeCard';
 import AddRecipeModal from '../src/components/AddRecipeModal';
+import RecipeView from '../src/components/RecipeView';
 import Tabs from '../navigation/tabs';
 import { Colors } from '../src/assets/Colors';
 
 function App(): React.JSX.Element {
     const [recipeName, setRecipeName] = useState([]);
     const [showModal, setShowModal] = useState(false);
+
+    // Manages the state of the selected recipe modal
+    const [selectedRecipe, setSelectedRecipe] = useState(null);
+    const [isRecipeViewVisible, setIsRecipeViewVisible] = useState(false);
+
+    // If a recipe card is pressed, open the modal
+    const handleRecipePress = async (recipe) => {
+        // Identify the ingredients in the selected recipe
+        const recipeingredientsResult = await supabase
+            .from('recipeingredients')
+            .select('*')
+            .eq('recipeid', recipe.recipeid);
+
+        // Collecting all ingredient IDs
+        const ingredientIds = recipeingredientsResult.data.map(item => item.ingredientid);
+
+        // Fetch ingredients with the corresponding recipeID
+        const ingredientsResult = await supabase
+            .from('ingredients')
+            .select('*')
+            .in('ingredientid', ingredientIds);
+
+        // Merging recipeIngredients with ingredients
+        const mergedIngredients = recipeingredientsResult.data.map(recipeIngredient => {
+            const ingredient = ingredientsResult.data.find(ingredient => ingredient.ingredientid === recipeIngredient.ingredientid);
+            return {
+                ...ingredient,
+                quantity: recipeIngredient.amount,
+            };
+        });
+
+        const instructionsResult = await supabase
+            .from('instructions')
+            .select('*')
+            .eq('recipeid', recipe.recipeid);
+
+        const notesResult = await supabase
+            .from('notes')
+            .select('*')
+            .eq('recipeid', recipe.recipeid);
+
+        const fullRecipeDetails = {
+            ...recipe,
+            ingredients: mergedIngredients,
+            instructions: instructionsResult.data,
+            notes: notesResult.data
+        };
+
+        setSelectedRecipe(fullRecipeDetails);
+        setIsRecipeViewVisible(true);
+        console.log('Selected Recipe:', mergedIngredients);
+    };
+
+
+    const closeRecipeView = () => {
+        setIsRecipeViewVisible(false);
+    };
+
+
 
     // Function to get all the recipe names from the database
     const getRecipeName = async () => {
@@ -123,7 +183,7 @@ function App(): React.JSX.Element {
                 <FlatList
                     data={recipeName}
                     renderItem={({ item, index }) => (
-                        <RecipeCard item={item} />
+                        <RecipeCard item={item} onPress={handleRecipePress} />
                     )}
                     keyExtractor={item => item.recipeid.toString()}
                 />
@@ -133,6 +193,13 @@ function App(): React.JSX.Element {
             </View>
 
             {showModal ? <AddRecipeModal saveNewRecipe={saveRecipe} hideModal={() => setShowModal(false)} /> : null}
+            {isRecipeViewVisible && ( // Added RecipeView modal
+                <RecipeView
+                    visible={isRecipeViewVisible}
+                    recipe={selectedRecipe}
+                    onClose={closeRecipeView}
+                />
+            )}
         </SafeAreaView>
 
 
@@ -147,8 +214,9 @@ const styles = StyleSheet.create({
 
     scrollView: {
         flex: 1,
+        marginBottom: '21%', // Stops it going behind the nav bar
         backgroundColor: Colors.TEAL_LIGHT,
-        padding: '5%',
+        paddingHorizontal: '5%',
     },
 
     heading: {
@@ -160,13 +228,13 @@ const styles = StyleSheet.create({
     },
 
     AddButton: {
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         backgroundColor: '#FFFFFF',
         borderRadius: 100,
         position: 'absolute',
-        bottom: '10%',
-        right: '5%',
+        bottom: '-5%',
+        right: '1%',
         margin: '5%',
         shadowOffset: {
             width: 0,

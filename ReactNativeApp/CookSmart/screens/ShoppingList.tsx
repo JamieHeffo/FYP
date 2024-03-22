@@ -95,27 +95,6 @@ const ShoppingList = () => {
     }, []); // Ensure this effect runs only once on component mount
 
 
-
-
-    /*     // Hook to fetch ingredient data when the component mounts
-        useEffect(() => {
-            const fetchData = async () => {
-                const ingredientsData = await getIngredients();
-                const amountsData = await getIngredientAmounts();
-     
-                // Combine the data based on a shared identifier (e.g., ingredient ID)
-                const combinedData = ingredientsData.map(ingredient => ({
-                    ...ingredient,
-                    amount: amountsData.find(amount => amount.ingredientid === ingredient.ingredientid)?.amount || 0,
-                }));
-     
-                setIngredients(combinedData);
-            };
-     
-            fetchData(); 
-        }, []);*/
-
-
     return (
         <SafeAreaView style={styles.mainView}>
             <View style={styles.scrollView}>
@@ -142,6 +121,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Colors.TEAL_LIGHT,
         padding: '5%',
+        paddingBottom: '20%'
     },
 
     heading: {

@@ -14,7 +14,8 @@ const ShoppingListItem = (props) => {
                     onValueChange={setSelection}
                     tintColors={{ true: Colors.TEAL, false: Colors.GREY }}
                 />
-                <Text style={styles.itemText}>{props.item.ingredient.name} - {props.item.amount}g</Text>
+                <Text style={styles.itemText}>{props.item.ingredient.name}</Text>
+                <Text style={styles.amountText}>{props.item.amount}g</Text>
             </View>
         </View >
     );
@@ -49,19 +50,31 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        padding: 5
+        paddingBottom: '1%'
     },
 
     itemText: {
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 20,
         color: Colors.TEAL,
-        marginLeft: 10, // Space between checkbox and text
+        flex: 3,
+        // marginLeft: '2%', // Space between checkbox and text
+    },
+
+    amountText: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: Colors.TEAL,
+        flex: 1, // Adjust this value as needed for the amount
+        //textAlign: 'justify', // Align text to the right
+        paddingRight: '20%'
     },
 
     checkbox: {
-        alignSelf: 'center',
+        //alignSelf: 'center',
         paddingHorizontal: 30,
+        //paddingLeft: '15%',
+        transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],
         //height: '80%',
         //width: '80%',
     }
