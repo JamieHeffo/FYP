@@ -1,21 +1,27 @@
-import React from 'react';
-import { View, Text, StyleSheet, Touchable, TouchableOpacity } from 'react-native';
-import { Colors } from '../assets/Colors'; // Assuming Colors are defined in a separate file
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
+import { Colors } from '../assets/Colors';
 
 const RecipeCard = ({ item, onPress }) => {
-    return (
-        <TouchableOpacity onPress={() => onPress(item)}>
-            <View style={styles.mainView}>
+    const [isSelected, setSelection] = useState(false);
 
-                <View style={styles.item}>
+    return (
+        <View style={styles.mainView}>
+            <TouchableOpacity style={styles.item} onPress={() => onPress(item)}>
+                <View>
                     <Text style={styles.titleText}>{item.title}</Text>
                     <Text style={styles.detailText}>Calories: {item.calories}</Text>
                     <Text style={styles.detailText}>Time: {item.time}</Text>
-                    <Text style={styles.detailText}>Servings : {item.servings}</Text>
+                    <Text style={styles.detailText}>Servings: {item.servings}</Text>
                 </View>
-
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+            <CheckBox
+                value={isSelected}
+                onValueChange={setSelection}
+                style={styles.checkbox}
+            />
+        </View>
     );
 };
 
@@ -23,12 +29,8 @@ export default RecipeCard;
 
 const styles = StyleSheet.create({
     mainView: {
-        width: '100%',
+        flexDirection: 'row',
         alignItems: 'center',
-        marginTop: '3%',
-    },
-    item: {
-        width: '100%',
         backgroundColor: Colors.WHITE,
         borderColor: Colors.TEAL_DARK,
         borderWidth: 1,
@@ -41,16 +43,23 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.10,
         shadowRadius: 3.5,
         elevation: 5,
+        marginTop: '3%',
         padding: 10,
+    },
+    item: {
+        flex: 1, // Take up all space except for checkbox
     },
     titleText: {
         fontSize: 20,
         fontWeight: 'bold',
         color: Colors.TEAL,
-        marginBottom: 5, // Space between title and details
+        marginBottom: 5,
     },
     detailText: {
         fontSize: 16,
-        color: '#808080', // Lighter grey for detail text
+        color: '#808080',
+    },
+    checkbox: {
+        marginLeft: 10, // Add some space between the text and the checkbox
     },
 });

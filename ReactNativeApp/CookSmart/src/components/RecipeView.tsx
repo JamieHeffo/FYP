@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Colors } from '../assets/Colors'; // Adjust the path as needed
+import { Colors } from '../assets/Colors';
+import CheckBox from '@react-native-community/checkbox';
 
 const RecipeView = ({ visible, onClose, recipe }) => {
     if (!recipe) return null;
@@ -69,13 +70,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     heading: {
-        fontSize: 20,
+        fontSize: 25,
         color: Colors.TEAL,
         fontWeight: 'bold',
         marginBottom: 10,
     },
     text: {
-        fontSize: 16,
+        fontSize: 18,
         color: '#808080',
         marginBottom: 10,
     },

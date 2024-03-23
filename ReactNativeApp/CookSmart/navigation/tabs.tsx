@@ -48,25 +48,6 @@ const Tabs = () => {
                 }
 
             } />
-            <Tab.Screen name="ShoppingList" component={ShoppingList} options={
-                {
-                    tabBarIcon: ({ focused }) => (
-                        <View style={{ alignItems: 'center', justifyContent: 'center', top: 10 }}>
-                            <Image
-                                source={require('../src/assets/icons/menu.png')}
-                                resizeMode='contain'
-                                style={{
-                                    width: 25,
-                                    height: 25,
-                                    tintColor: focused ? '#e32f45' : '#748c94'
-                                }}
-                            />
-                            <Text style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 12 }}>SHOPPING</Text>
-                        </View>
-                    )
-                }
-
-            } />
             <Tab.Screen name="PhotoRecipe" component={PhotoRecipe}
                 options={
                     {
@@ -87,7 +68,27 @@ const Tabs = () => {
                     }
 
                 } />
-            <Tab.Screen name="Chat" component={Chat} options={
+            <Tab.Screen name="ShoppingList" component={ShoppingList} options={
+                {
+                    tabBarIcon: ({ focused }) => (
+                        <View style={{ alignItems: 'center', justifyContent: 'center', top: 10 }}>
+                            <Image
+                                source={require('../src/assets/icons/menu.png')}
+                                resizeMode='contain'
+                                style={{
+                                    width: 25,
+                                    height: 25,
+                                    tintColor: focused ? '#e32f45' : '#748c94'
+                                }}
+                            />
+                            <Text style={{ color: focused ? '#e32f45' : '#748c94', fontSize: 12 }}>SHOPPING</Text>
+                        </View>
+                    )
+                }
+
+            } />
+
+            {/*             <Tab.Screen name="Chat" component={Chat} options={
                 {
                     tabBarIcon: ({ focused }) => (
                         <View style={{ alignItems: 'center', justifyContent: 'center', top: 10 }}>
@@ -106,7 +107,7 @@ const Tabs = () => {
                 }
 
             } />
-
+ */}
 
 
         </Tab.Navigator>
