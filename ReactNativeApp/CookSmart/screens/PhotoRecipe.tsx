@@ -3,14 +3,14 @@ import axios from 'axios';
 import { Colors } from '../src/assets/Colors';
 import { Camera, useCameraDevice, useCameraDevices } from 'react-native-vision-camera';
 import { View, Text, Button, Alert, StyleSheet, SafeAreaView, FlatList, TouchableOpacity, ScrollView, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import RNFS from 'react-native-fs';
+import RecipeGenerator from '../src/components/RecipeGenerator';
+import { useFocusEffect } from '@react-navigation/native';
 
 const PhotoRecipe = ({ navigation }) => {
 
-
+    //Camera permission variables
     const cameraPermission = Camera.getCameraPermissionStatus()
     const microphonePermission = Camera.getMicrophonePermissionStatus()
-    const [detectedObjects, setDetectedObjects] = useState([]);
     const cameraRef = React.useRef(null);
 
     // State variables to manage the camera and modal
@@ -18,13 +18,55 @@ const PhotoRecipe = ({ navigation }) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [cameraVisible, setCameraVisible] = useState(true);
     const [inputValue, setInputValue] = useState('');
-    // List of Recipe Styles
-    const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
-    const [currentStyleIndex, setCurrentStyleIndex] = useState(0); // Index of the currently selected style
 
+    //State variables to manage the recipe data
+    const [detectedObjects, setDetectedObjects] = useState([]);
+    const [recipeData, setRecipeData] = useState(null);
+    const [servingSize, setServingSize] = useState(1);
+
+    // List of Recipe Styles
+    const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Vegetarian', 'Vegan', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
+
+    // Index of the current recipe style
+    const [currentStyleIndex, setCurrentStyleIndex] = useState(0);
+
+    // Handler to increment serving size
+    const incrementServingSize = () => {
+        if (servingSize < 12) {
+            setServingSize(prevSize => prevSize + 1);
+        }
+    };
+
+    // Handler to decrement serving size
+    const decrementServingSize = () => {
+        if (servingSize > 1) {
+            setServingSize(prevSize => prevSize - 1);
+        }
+    };
+
+    // Declare camera devices
     const device = useCameraDevice('back', {
         physicalDevices: ['wide-angle-camera']
     })
+
+
+    // Handler to remove an ingredient
+    const handleRemoveItem = (keyToRemove) => {
+        const updatedList = detectedObjects.filter(item => item.key !== keyToRemove);
+        setDetectedObjects(updatedList);
+    };
+
+    // Useeffect hook to bring the camera back on page reset
+    useFocusEffect(
+        React.useCallback(() => {
+            setCameraVisible(true); // Show camera
+            setButtonLabel('Capture'); // Reset button label
+            setDetectedObjects([]); // Clear detected objects
+            setCurrentStyleIndex(0); // Reset recipe style index
+            setRecipeData(null); // Clear recipe data
+            return () => { };
+        }, [])
+    );
 
     // Handlder to open the modal view on generate recipe
     const handleButtonPress = () => {
@@ -36,12 +78,19 @@ const PhotoRecipe = ({ navigation }) => {
             setModalVisible(true);
 
             // Create a single string with the recipe style and ingredients
-            const recipeStyle = `${recipeStyles[currentStyleIndex]}`;
             const ingredients = `${detectedObjects.map(item => item.label).join(', ')}`;
 
-            const prompt = `Generate a ${recipeStyle} style recipe with the following ingredients : ${ingredients}`;
+            const recipeStyle = `${recipeStyles[currentStyleIndex]}`;
+
+
+            const prompt = `Generate a ${recipeStyle} style recipe. To recipe should yield ${servingSize} servings.  You have been supplied with the following ingredients : ${ingredients}`;
+
+            console.log("Serving size:", servingSize); // Log serving size
+
+            //Call the GPT API to generate a recipe
 
             console.log(prompt);
+            generateRecipe(prompt);
         }
     };
 
@@ -58,7 +107,6 @@ const PhotoRecipe = ({ navigation }) => {
             Alert.alert("Error", "Please enter an ingredient.");
         }
     };
-
 
 
     //if (device == null) return <NoCameraDeviceError />
@@ -88,9 +136,10 @@ const PhotoRecipe = ({ navigation }) => {
                     type: 'image/jpeg'
                 });
 
-                const response = await axios.post('https://detect.roboflow.com/vegetables-xfglo/1', formData, {
+                const response = await axios.post('https://detect.roboflow.com/vegetables-xfglo/2', formData, {
                     params: {
-                        api_key: "pVgrgJI8kfW40jASdT4Y"
+                        //api_key: process.env.REACT_APP_ROBOFLOW_API_KEY
+                        api_key: 'pVgrgJI8kfW40jASdT4Y'
                     },
                     headers: {
                         "Content-Type": "multipart/form-data"
@@ -128,6 +177,88 @@ const PhotoRecipe = ({ navigation }) => {
         }
     };
 
+    // Function to generate a recipe using the OpenAI API
+    const generateRecipe = async (prompt) => {
+
+        // Example JSON object to send to the API
+        const jsonObject = {
+            users: [
+                {
+                    userid: "unique_user_id",
+                    username: "user_name",
+                    recipes: [
+                        {
+                            recipeid: "unique_recipe_id",
+                            title: "recipe_title",
+                            time: "time_to_cook", // Text Field Stored in Minutes formatted MM ie 40
+                            servings: "number_of_servings",// Stored as float ie 2 
+                            calories: "calorie_count", // Stored as integer. ie 300
+                            onshoppinglist: "FALSE",
+                            ingredients: [
+                                {
+                                    ingredientid: "unique_ingredient_id",
+                                    name: "ingredient_name", // The ingredient name should be a whole ingredient. ie 'Onion', 'Tomato', 'Pasta' not 'Sliced Onion'
+                                    amount: "amount_used" // Must be INTEGER, Stored in GRAMS
+                                }
+                            ],
+                            notes: [
+                                {
+                                    noteid: "unique_note_id",
+                                    note: "note_content"
+                                }
+                            ],
+                            instructions: [
+                                {
+                                    instructionid: "unique_instruction_id",
+                                    stepnumber: "step_number",
+                                    description: "instruction_description"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            ingredients: [
+                {
+                    ingredientid: "unique_ingredient_id",
+                    name: "ingredient_name"
+                }
+            ]
+        };
+        const jsonString = JSON.stringify(jsonObject, null, 2);
+
+        try {
+            const data = {
+                model: "gpt-3.5-turbo-0125",
+                response_format: { "type": "json_object" },
+                messages: [
+                    { role: "system", content: "You are a world class Chef who specialises in teaching people who are new to cooking how to cook simple meals" },
+                    { role: "system", content: "You can assume that they have access to basic pantry items" },
+                    { role: "system", content: "Every ingredient amount in the recipe is stored in grams, so the amounts must be an integer" },
+                    { role: "system", content: "Do not specify whole ingredients, use their weight in grams ie. 1 Onion = 100 Onion " },
+                    { role: "system", content: `You only respond in JSON objects. This is an example of a JSON object: ${jsonString}` },
+                    { role: "user", content: prompt }
+                ]
+            };
+
+            const response = await axios.post('https://api.openai.com/v1/chat/completions', data, {
+                headers: {
+                    //'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
+                    'Authorization': ``,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const messageText = response.data.choices[0].message.content;
+            console.log('OpenAI response message:', messageText);
+            // Store the response in the state
+            setRecipeData(messageText);
+        } catch (error) {
+            console.error('OpenAI API error:', error);
+            Alert.alert("API Error", "Failed to generate recipe.");
+        }
+    };
+
     return (
         <SafeAreaView style={styles.whole}>
             <KeyboardAvoidingView
@@ -135,23 +266,14 @@ const PhotoRecipe = ({ navigation }) => {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
             //keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
             >
-                <Modal
-                    animationType="slide"
-                    transparent={true}
+
+                <RecipeGenerator
                     visible={isModalVisible}
-                    onRequestClose={() => {
-                        Alert.alert("Modal has been closed.");
-                        setModalVisible(!isModalVisible);
-                    }}
-                >
-                    <View style={styles.modal}>
-                        <Text style={styles.modalText}>Generate your recipe here!</Text>
-                        <Button
-                            title="Close"
-                            onPress={() => setModalVisible(!isModalVisible)}
-                        />
-                    </View>
-                </Modal>
+                    recipeData={recipeData}
+                    onClose={() =>
+                        setModalVisible(false)}>
+                </RecipeGenerator>
+
                 <Text style={styles.heading}>Generate Recipe</Text>
                 {cameraVisible ? (
                     <View style={styles.cameraContainer}>
@@ -174,20 +296,45 @@ const PhotoRecipe = ({ navigation }) => {
                     <>
                         {/* Recipe Style Selector */}
                         <View style={styles.listContainer}>
-                            <Text style={styles.titleText}>Recipe Style</Text>
+                            <View style={styles.styleContainers}>
+                                <View style={styles.labelContainer}>
+                                    <Text style={styles.titleText}>Recipe Style</Text>
 
-                            <View style={styles.recipeStyleContainer}>
-                                <Button
-                                    title="<"
-                                    onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : recipeStyles.length - 1))}
-                                />
-                                <Text style={styles.recipeStyleText}>
-                                    {recipeStyles[currentStyleIndex]}
-                                </Text>
-                                <Button
-                                    title=">"
-                                    onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex + 1) % recipeStyles.length)}
-                                />
+
+                                    <View style={styles.recipeStyleContainer}>
+                                        <Button
+                                            title="<"
+                                            onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : recipeStyles.length - 1))}
+                                        />
+                                        <Text style={styles.recipeStyleText}>
+                                            {recipeStyles[currentStyleIndex]}
+                                        </Text>
+                                        <Button
+                                            title=">"
+                                            onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex + 1) % recipeStyles.length)}
+                                        />
+                                    </View>
+                                </View>
+
+                                {/* Serving Size Input */}
+                                <View style={styles.labelContainer}>
+                                    <Text style={styles.titleText}>Servings</Text>
+
+                                    <View style={styles.servingSizeContainer}>
+
+                                        <Button
+                                            title="<"
+                                            onPress={decrementServingSize}
+                                        />
+                                        <Text style={styles.recipeStyleText}>
+                                            {servingSize}
+                                        </Text>
+                                        <Button
+                                            title=">"
+                                            onPress={incrementServingSize}
+                                        />
+                                    </View>
+                                </View>
                             </View>
 
                             {/* List of detected objects */}
@@ -195,9 +342,11 @@ const PhotoRecipe = ({ navigation }) => {
                             <FlatList
                                 data={detectedObjects}
                                 renderItem={({ item }) => (
-                                    <View style={styles.ingredients}>
-                                        <Text style={styles.listText}>{item.label}</Text>
-                                    </View>
+                                    <TouchableOpacity onPress={() => handleRemoveItem(item.key)}>
+                                        <View style={styles.ingredients}>
+                                            <Text style={styles.listText}>{item.label}</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 )}
                                 keyExtractor={item => item.key}
                             />
@@ -327,25 +476,17 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 
-    modal: {
-        marginTop: 'auto',
-        height: '86%',
-        borderRadius: 20,
-        backgroundColor: Colors.BEIGE,
-    },
 
     recipeStyleContainer: {
         flexDirection: 'row',
-        alignItems: 'center',// Centres Text vertically
-        justifyContent: 'center', // Centres text horizontally
-        //marginHorizontal: '5%',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: Colors.WHITE,
-        width: '35%',
+        //width: '50%', // Adjusted width
         marginBottom: '5%',
         borderRadius: 10,
         borderColor: Colors.TEAL_DARK,
         borderWidth: 1,
-        //Shadow Style
         shadowColor: '#7F5DF0',
         shadowOffset: {
             width: 0,
@@ -355,6 +496,27 @@ const styles = StyleSheet.create({
         shadowRadius: 3.5,
         elevation: 5
     },
+
+    servingSizeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.WHITE,
+        //width: '50%', // Adjusted width
+        marginBottom: '5%',
+        borderRadius: 10,
+        borderColor: Colors.TEAL_DARK,
+        borderWidth: 1,
+        shadowColor: '#7F5DF0',
+        shadowOffset: {
+            width: 0,
+            height: 10
+        },
+        shadowOpacity: 0.10,
+        shadowRadius: 3.5,
+        elevation: 5
+    },
+
 
     addContainer: {
         flexDirection: 'row',
@@ -378,9 +540,25 @@ const styles = StyleSheet.create({
         elevation: 5
     },
 
+    labelContainer: {
+        //alignItems: 'center',
+    },
+
     recipeContainerOverlay: {
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    recipeStyleText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginHorizontal: '5%',
+        color: '#808080'
+    },
+
+    styleContainers: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
 });
 
