@@ -5,95 +5,60 @@ import ShoppingListItem from '../src/components/ShoppingListItem';
 import { Colors } from '../src/assets/Colors';
 
 const ShoppingList = () => {
-
-    // State to store the ingredient data
     const [ingredients, setIngredients] = useState([]);
 
-    // Function to get recipe ID where recipes are on the shopping list
-    const getRecipeID = async () => {
-        let { data: recipeIDData, error } = await supabase
-            .from('recipes')
-            .select('recipeid')
-            .eq('onshoppinglist', true);
+    const fetchIngredients = async () => {
+        try {
+            const { data: recipeIDData, error: recipeIDError } = await supabase
+                .from('recipes')
+                .select('recipeid')
+                .eq('onshoppinglist', true);
 
-        if (error) {
-            console.error("Error fetching recipe ID:", error);
-            // Handle the error (e.g., show an error message to the user)
-            return [];
-        }
-        console.log('RecipeID : \n', recipeIDData);
-        return recipeIDData;
-    }
-
-    //Take the recipe ID and use it to find which ingredients are nee for that recipe
-
-    // Function to get ingredient amounts from the database
-    const getIngredientAmounts = async (recipeIDs) => {
-        let { data: amountsData, error } = await supabase
-            .from('recipeingredients')
-            .select('*')
-            .in('recipeid', recipeIDs);
-
-        if (error) {
-            console.error("Error fetching ingredient amounts:", error);
-            // Handle the error (e.g., show an error message to the user)
-            return [];
-        }
-        console.log('Amounts : \n', amountsData);
-        return amountsData;
-    }
-
-    //ingredients data links recipeID to ingredientID
-
-    // Function to get ingredient data from the database
-    const getIngredients = async (ingredientIDs) => {
-        let { data: ingredientsData, error } = await supabase
-            .from('ingredients')
-            .select('*');
-
-        if (error) {
-            console.error("Error fetching ingredients:", error);
-            // Handle the error (e.g., show an error message to the user)
-            return [];
-        }
-        console.log('Ingredients : \n', ingredientsData);
-        return ingredientsData;
-    }
-
-    //Take the ingredient ID and ue it to find the ingredient name
-
-    // Use the retrieved recipe IDs to fetch ingredient amounts
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Step 1: Fetch Recipe IDs
-                const recipeIDs = await getRecipeID();
-
-                // Step 2: Fetch Ingredient Amounts for Recipe IDs
-                const amountsData = await getIngredientAmounts(recipeIDs.map(entry => entry.recipeid));
-
-                // Step 3: Extract Ingredient IDs from Amounts Data
-                const ingredientIDs = amountsData.map(entry => entry.ingredientid);
-
-                // Step 4: Fetch Ingredient Data for Ingredient IDs
-                const ingredientsData = await getIngredients(ingredientIDs);
-
-                // Step 5: Combine Data based on Ingredient ID
-                const combinedData = amountsData.map(amountEntry => ({
-                    ...amountEntry,
-                    ingredient: ingredientsData.find(ingredient => ingredient.ingredientid === amountEntry.ingredientid),
-                }));
-
-                setIngredients(combinedData);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                // Handle the error (e.g., show an error message to the user)
+            if (recipeIDError) {
+                console.error("Error fetching recipe ID:", recipeIDError);
+                return;
             }
-        };
 
-        fetchData();
-    }, []); // Ensure this effect runs only once on component mount
+            const recipeIDs = recipeIDData.map(entry => entry.recipeid);
 
+            const { data: amountsData, error: amountsError } = await supabase
+                .from('recipeingredients')
+                .select('*')
+                .in('recipeid', recipeIDs);
+
+            if (amountsError) {
+                console.error("Error fetching ingredient amounts:", amountsError);
+                return;
+            }
+
+            const ingredientIDs = amountsData.map(entry => entry.ingredientid);
+
+            const { data: ingredientsData, error: ingredientsError } = await supabase
+                .from('ingredients')
+                .select('*')
+                .in('ingredientid', ingredientIDs);
+
+            if (ingredientsError) {
+                console.error("Error fetching ingredients:", ingredientsError);
+                return;
+            }
+
+            const combinedData = amountsData.map(amountEntry => ({
+                ...amountEntry,
+                ingredient: ingredientsData.find(ingredient => ingredient.ingredientid === amountEntry.ingredientid),
+            }));
+
+            setIngredients(combinedData);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchIngredients();
+        const intervalId = setInterval(fetchIngredients, 10000);
+        return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <SafeAreaView style={styles.mainView}>
@@ -134,4 +99,3 @@ const styles = StyleSheet.create({
 });
 
 export default ShoppingList;
-``

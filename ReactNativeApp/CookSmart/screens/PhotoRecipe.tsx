@@ -22,15 +22,39 @@ const PhotoRecipe = ({ navigation }) => {
     //State variables to manage the recipe data
     const [detectedObjects, setDetectedObjects] = useState([]);
     const [recipeData, setRecipeData] = useState(null);
+    const [servingSize, setServingSize] = useState(1);
 
     // List of Recipe Styles
-    const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
-    const [currentStyleIndex, setCurrentStyleIndex] = useState(0); // Index of the currently selected style
+    const recipeStyles = ['Italian', 'Mexican', 'Chinese', 'Vegetarian', 'Vegan', 'Indian', 'American', 'Japanese', 'Korean', 'Thai', 'French', 'African', 'Irish'];
+
+    // Index of the current recipe style
+    const [currentStyleIndex, setCurrentStyleIndex] = useState(0);
+
+    // Handler to increment serving size
+    const incrementServingSize = () => {
+        if (servingSize < 12) {
+            setServingSize(prevSize => prevSize + 1);
+        }
+    };
+
+    // Handler to decrement serving size
+    const decrementServingSize = () => {
+        if (servingSize > 1) {
+            setServingSize(prevSize => prevSize - 1);
+        }
+    };
 
     // Declare camera devices
     const device = useCameraDevice('back', {
         physicalDevices: ['wide-angle-camera']
     })
+
+
+    // Handler to remove an ingredient
+    const handleRemoveItem = (keyToRemove) => {
+        const updatedList = detectedObjects.filter(item => item.key !== keyToRemove);
+        setDetectedObjects(updatedList);
+    };
 
     // Useeffect hook to bring the camera back on page reset
     useFocusEffect(
@@ -43,6 +67,7 @@ const PhotoRecipe = ({ navigation }) => {
             return () => { };
         }, [])
     );
+
     // Handlder to open the modal view on generate recipe
     const handleButtonPress = () => {
 
@@ -53,10 +78,14 @@ const PhotoRecipe = ({ navigation }) => {
             setModalVisible(true);
 
             // Create a single string with the recipe style and ingredients
-            const recipeStyle = `${recipeStyles[currentStyleIndex]}`;
             const ingredients = `${detectedObjects.map(item => item.label).join(', ')}`;
 
-            const prompt = `Generate a ${recipeStyle} style recipe with the following ingredients : ${ingredients}`;
+            const recipeStyle = `${recipeStyles[currentStyleIndex]}`;
+
+
+            const prompt = `Generate a ${recipeStyle} style recipe. To recipe should yield ${servingSize} servings.  You have been supplied with the following ingredients : ${ingredients}`;
+
+            console.log("Serving size:", servingSize); // Log serving size
 
             //Call the GPT API to generate a recipe
 
@@ -107,7 +136,7 @@ const PhotoRecipe = ({ navigation }) => {
                     type: 'image/jpeg'
                 });
 
-                const response = await axios.post('https://detect.roboflow.com/vegetables-xfglo/1', formData, {
+                const response = await axios.post('https://detect.roboflow.com/vegetables-xfglo/2', formData, {
                     params: {
                         //api_key: process.env.REACT_APP_ROBOFLOW_API_KEY
                         api_key: 'pVgrgJI8kfW40jASdT4Y'
@@ -161,9 +190,9 @@ const PhotoRecipe = ({ navigation }) => {
                         {
                             recipeid: "unique_recipe_id",
                             title: "recipe_title",
-                            time: "time_to_cook", // Text Field Stored in Minutes formatted HH:MM
-                            servings: "number_of_servings",// Float
-                            calories: "calorie_count",
+                            time: "time_to_cook", // Text Field Stored in Minutes formatted MM ie 40
+                            servings: "number_of_servings",// Stored as float ie 2 
+                            calories: "calorie_count", // Stored as integer. ie 300
                             onshoppinglist: "FALSE",
                             ingredients: [
                                 {
@@ -206,6 +235,7 @@ const PhotoRecipe = ({ navigation }) => {
                     { role: "system", content: "You are a world class Chef who specialises in teaching people who are new to cooking how to cook simple meals" },
                     { role: "system", content: "You can assume that they have access to basic pantry items" },
                     { role: "system", content: "Every ingredient amount in the recipe is stored in grams, so the amounts must be an integer" },
+                    { role: "system", content: "Do not specify whole ingredients, use their weight in grams ie. 1 Onion = 100 Onion " },
                     { role: "system", content: `You only respond in JSON objects. This is an example of a JSON object: ${jsonString}` },
                     { role: "user", content: prompt }
                 ]
@@ -266,20 +296,45 @@ const PhotoRecipe = ({ navigation }) => {
                     <>
                         {/* Recipe Style Selector */}
                         <View style={styles.listContainer}>
-                            <Text style={styles.titleText}>Recipe Style</Text>
+                            <View style={styles.styleContainers}>
+                                <View style={styles.labelContainer}>
+                                    <Text style={styles.titleText}>Recipe Style</Text>
 
-                            <View style={styles.recipeStyleContainer}>
-                                <Button
-                                    title="<"
-                                    onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : recipeStyles.length - 1))}
-                                />
-                                <Text style={styles.recipeStyleText}>
-                                    {recipeStyles[currentStyleIndex]}
-                                </Text>
-                                <Button
-                                    title=">"
-                                    onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex + 1) % recipeStyles.length)}
-                                />
+
+                                    <View style={styles.recipeStyleContainer}>
+                                        <Button
+                                            title="<"
+                                            onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : recipeStyles.length - 1))}
+                                        />
+                                        <Text style={styles.recipeStyleText}>
+                                            {recipeStyles[currentStyleIndex]}
+                                        </Text>
+                                        <Button
+                                            title=">"
+                                            onPress={() => setCurrentStyleIndex(prevIndex => (prevIndex + 1) % recipeStyles.length)}
+                                        />
+                                    </View>
+                                </View>
+
+                                {/* Serving Size Input */}
+                                <View style={styles.labelContainer}>
+                                    <Text style={styles.titleText}>Servings</Text>
+
+                                    <View style={styles.servingSizeContainer}>
+
+                                        <Button
+                                            title="<"
+                                            onPress={decrementServingSize}
+                                        />
+                                        <Text style={styles.recipeStyleText}>
+                                            {servingSize}
+                                        </Text>
+                                        <Button
+                                            title=">"
+                                            onPress={incrementServingSize}
+                                        />
+                                    </View>
+                                </View>
                             </View>
 
                             {/* List of detected objects */}
@@ -287,9 +342,11 @@ const PhotoRecipe = ({ navigation }) => {
                             <FlatList
                                 data={detectedObjects}
                                 renderItem={({ item }) => (
-                                    <View style={styles.ingredients}>
-                                        <Text style={styles.listText}>{item.label}</Text>
-                                    </View>
+                                    <TouchableOpacity onPress={() => handleRemoveItem(item.key)}>
+                                        <View style={styles.ingredients}>
+                                            <Text style={styles.listText}>{item.label}</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 )}
                                 keyExtractor={item => item.key}
                             />
@@ -422,16 +479,14 @@ const styles = StyleSheet.create({
 
     recipeStyleContainer: {
         flexDirection: 'row',
-        alignItems: 'center',// Centres Text vertically
-        justifyContent: 'center', // Centres text horizontally
-        //marginHorizontal: '5%',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: Colors.WHITE,
-        width: '35%',
+        //width: '50%', // Adjusted width
         marginBottom: '5%',
         borderRadius: 10,
         borderColor: Colors.TEAL_DARK,
         borderWidth: 1,
-        //Shadow Style
         shadowColor: '#7F5DF0',
         shadowOffset: {
             width: 0,
@@ -441,6 +496,27 @@ const styles = StyleSheet.create({
         shadowRadius: 3.5,
         elevation: 5
     },
+
+    servingSizeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.WHITE,
+        //width: '50%', // Adjusted width
+        marginBottom: '5%',
+        borderRadius: 10,
+        borderColor: Colors.TEAL_DARK,
+        borderWidth: 1,
+        shadowColor: '#7F5DF0',
+        shadowOffset: {
+            width: 0,
+            height: 10
+        },
+        shadowOpacity: 0.10,
+        shadowRadius: 3.5,
+        elevation: 5
+    },
+
 
     addContainer: {
         flexDirection: 'row',
@@ -464,9 +540,25 @@ const styles = StyleSheet.create({
         elevation: 5
     },
 
+    labelContainer: {
+        //alignItems: 'center',
+    },
+
     recipeContainerOverlay: {
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    recipeStyleText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginHorizontal: '5%',
+        color: '#808080'
+    },
+
+    styleContainers: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
 });
 

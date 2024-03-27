@@ -128,20 +128,27 @@ const RecipeGenerator = ({ visible, onClose, onSave, recipeData }) => {
                 {recipeData && (
                     // Code to display recipe data
                     <>
-                        <ScrollView>
+                        <ScrollView showsVerticalScrollIndicator={false}>
                             <Text style={styles.title}>{title}</Text>
 
-                            <Text style={styles.heading}>Ingredients:</Text>
+                            <View style={styles.infoContainer}>
+                                <Text style={styles.text}>{`${calories} Kcal`}</Text>
+                                <Text style={styles.text}>{`${time} minutes`}</Text>
+                                <Text style={styles.text}>{`Serves ${servings}`}</Text>
+                            </View>
+
+
+                            <Text style={styles.heading}>Ingredients</Text>
                             {ingredients.map((ingredient, index) => (
                                 <Text style={styles.text} key={index}>{`${ingredient.amount}g of ${ingredient.name}`}</Text>
                             ))}
 
-                            <Text style={styles.heading}>Instructions:</Text>
+                            <Text style={styles.heading}>Instructions</Text>
                             {instructions.map((instruction, index) => (
                                 <Text style={styles.text} key={index}>{`${instruction.stepnumber}. ${instruction.description}`}</Text>
                             ))}
 
-                            <Text style={styles.heading}>Notes:</Text>
+                            <Text style={styles.heading}>Notes</Text>
                             {notes.map((note, index) => (
                                 <Text style={styles.text} key={index}>{note.note}</Text>
                             ))}
@@ -151,6 +158,7 @@ const RecipeGenerator = ({ visible, onClose, onSave, recipeData }) => {
                             <TouchableOpacity style={styles.saveButton} onPress={saveGeneratedRecipe}>
                                 <Text style={styles.buttonText}>Save to Database</Text>
                             </TouchableOpacity>
+
                             <TouchableOpacity style={styles.dismissButton} onPress={onClose}>
                                 <Text style={styles.buttonText}>Dismiss</Text>
                             </TouchableOpacity>
@@ -164,16 +172,16 @@ const RecipeGenerator = ({ visible, onClose, onSave, recipeData }) => {
 
 const styles = StyleSheet.create({
     modal: {
-        height: '86%',
         borderRadius: 20,
         backgroundColor: Colors.BEIGE,
     },
     modalView: {
-        marginTop: 'auto',
+        marginTop: '10%',
+        paddingBottom: '20%',
         backgroundColor: "white",
-        height: '86%',
+        height: '100%',
         borderRadius: 20,
-        padding: 35,
+        padding: '5%',
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -184,29 +192,27 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5
     },
-    scrollViewContent: {
-        padding: 20
-    },
     title: {
+        marginTop: '5%',
         fontSize: 30,
         color: Colors.TEAL,
         fontWeight: 'bold',
-        marginBottom: 10,
     },
     heading: {
-        fontSize: 20,
+        fontSize: 25,
         color: Colors.TEAL,
         fontWeight: 'bold',
         marginBottom: 10,
     },
     text: {
-        fontSize: 16,
+        fontSize: 18,
         color: '#808080',
         marginBottom: 10,
     },
     buttonContainer: {
         width: '100%',
         marginTop: 10,
+        alignItems: 'center',
     },
     saveButton: {
         backgroundColor: Colors.TEAL,
@@ -217,6 +223,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 10, // Margin between buttons
     },
+
     dismissButton: {
         backgroundColor: '#808080',
         borderRadius: 25,
@@ -226,9 +233,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     buttonText: {
-        color: Colors.WHITE,
+        color: 'white',
         fontSize: 20,
     },
+    infoContainer: {
+        paddingTop: '2%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: '2%',
+        marginHorizontal: '2%',
+    },
+    data: {
+        marginLeft: '2%',
+        marginVertical: '2%',
+    },
+
 });
+
 
 export default RecipeGenerator;

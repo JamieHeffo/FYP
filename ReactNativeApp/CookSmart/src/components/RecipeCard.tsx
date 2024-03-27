@@ -1,24 +1,41 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { supabase } from '../../supabase/supabase';
 import CheckBox from '@react-native-community/checkbox';
 import { Colors } from '../assets/Colors';
 
 const RecipeCard = ({ item, onPress }) => {
-    const [isSelected, setSelection] = useState(false);
+    const [isSelected, setSelection] = useState(item.onshoppinglist);
+
+    const handleCheckboxChange = async (newValue) => {
+        // Update the local UI state
+        setSelection(newValue);
+
+        // Update onShoppingList value in the database
+        const { error } = await supabase
+            .from('recipes')
+            .update({ onshoppinglist: newValue })
+            .match({ recipeid: item.recipeid });
+
+        if (error) {
+            console.error('Error adding item to shopping list ', error.message);
+        }
+    };
+
 
     return (
         <View style={styles.mainView}>
             <TouchableOpacity style={styles.item} onPress={() => onPress(item)}>
                 <View>
                     <Text style={styles.titleText}>{item.title}</Text>
-                    <Text style={styles.detailText}>Calories: {item.calories}</Text>
-                    <Text style={styles.detailText}>Time: {item.time}</Text>
-                    <Text style={styles.detailText}>Servings: {item.servings}</Text>
+                    <Text style={styles.detailText}>{item.calories} Kcal</Text>
+                    <Text style={styles.detailText}>{item.time} Minutes</Text>
+                    <Text style={styles.detailText}>Serves {item.servings}</Text>
                 </View>
             </TouchableOpacity>
             <CheckBox
                 value={isSelected}
-                onValueChange={setSelection}
+                onValueChange={handleCheckboxChange}
                 style={styles.checkbox}
             />
         </View>

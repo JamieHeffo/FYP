@@ -1,7 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Colors } from '../assets/Colors';
-import CheckBox from '@react-native-community/checkbox';
 
 const RecipeView = ({ visible, onClose, recipe }) => {
     if (!recipe) return null;
@@ -9,23 +8,36 @@ const RecipeView = ({ visible, onClose, recipe }) => {
     return (
         <Modal style={styles.modal} transparent={true} visible={visible} animationType='slide' onRequestClose={onClose}>
             <View style={styles.modalView}>
-                <ScrollView>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     <Text style={styles.title}>{recipe.title}</Text>
 
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.text}>{`${recipe.calories} Kcal`}</Text>
+                        <Text style={styles.text}>{`${recipe.time} minutes`}</Text>
+                        <Text style={styles.text}>{`Serves ${recipe.servings}`}</Text>
+                    </View>
+
+
                     <Text style={styles.heading}>Ingredients</Text>
-                    {recipe.ingredients.map((ingredient, index) => (
-                        <Text style={styles.text} key={index}>{`${ingredient.quantity}g of ${ingredient.name}`}</Text>
-                    ))}
+                    <View style={styles.data}>
+                        {recipe.ingredients.map((ingredient, index) => (
+                            <Text style={styles.text} key={index}>{`${ingredient.quantity}g of ${ingredient.name}`}</Text>
+                        ))}
+                    </View>
 
                     <Text style={styles.heading}>Instructions</Text>
-                    {recipe.instructions.map((instruction, index) => (
-                        <Text style={styles.text} key={index}>{`${instruction.stepnumber}. ${instruction.description}`}</Text>
-                    ))}
+                    <View style={styles.data}>
+                        {recipe.instructions.map((instruction, index) => (
+                            <Text style={styles.text} key={index}>{`${instruction.stepnumber}. ${instruction.description}`}</Text>
+                        ))}
+                    </View>
 
                     <Text style={styles.heading}>Notes</Text>
-                    {recipe.notes.map((note, index) => (
-                        <Text style={styles.text} key={index}>{note.note}</Text>
-                    ))}
+                    <View style={styles.data}>
+                        {recipe.notes.map((note, index) => (
+                            <Text style={styles.text} key={index}>{note.note}</Text>
+                        ))}
+                    </View>
 
 
 
@@ -64,10 +76,10 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     title: {
+        marginTop: '5%',
         fontSize: 30,
         color: Colors.TEAL,
         fontWeight: 'bold',
-        marginBottom: 10,
     },
     heading: {
         fontSize: 25,
@@ -97,6 +109,18 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 20,
     },
+    infoContainer: {
+        paddingTop: '2%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: '2%',
+        marginHorizontal: '2%',
+    },
+    data:
+    {
+        marginLeft: '2%',
+        marginVertical: '2%',
+    }
 });
 
 export default RecipeView;

@@ -25,16 +25,16 @@ export default ShoppingListItem;
 
 const styles = StyleSheet.create({
     item: {
-        flexDirection: 'row', // Place checkbox and text side-by-side
-        alignItems: 'center', // Vertically center the items in the container
+        flexDirection: 'row',
+        alignItems: 'center',
         width: '100%',
-        height: 60,
+        minHeight: 60, // Use minHeight for dynamic height adjustment
         borderWidth: 1,
         backgroundColor: Colors.WHITE,
         borderColor: Colors.TEAL_DARK,
         borderRadius: 10,
         marginTop: 10,
-        justifyContent: 'flex-start', // Align children to the start of the container
+        justifyContent: 'flex-start',
         padding: '5%',
         shadowColor: '#7F5DF0',
         shadowOffset: {
@@ -45,37 +45,28 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 3
     },
-
     mainView: {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
         paddingBottom: '1%'
     },
-
     itemText: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 18,
         color: Colors.TEAL,
-        flex: 3,
-        // marginLeft: '2%', // Space between checkbox and text
+        flex: 2.5, // Increase flex to give more room for the text
     },
-
     amountText: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 18, // Adjust font size to maintain consistency
         color: Colors.TEAL,
-        flex: 1, // Adjust this value as needed for the amount
-        //textAlign: 'justify', // Align text to the right
-        paddingRight: '20%'
+        flex: 1,
+        paddingRight: '5%', // Adjust padding to ensure it fits
     },
-
     checkbox: {
-        //alignSelf: 'center',
         paddingHorizontal: 30,
-        //paddingLeft: '15%',
         transform: [{ scaleX: 0.9 }, { scaleY: 0.9 }],
-        //height: '80%',
-        //width: '80%',
     }
 });
+
